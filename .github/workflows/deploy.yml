@@ -1,0 +1,124 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for git-revision-date-localized
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build documentation
+        run: mkdocs build --strict
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: site/
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+  test:
+    name: Test Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install linkchecker
+
+      - name: Build documentation
+        run: mkdocs build --strict
+
+      - name: Check for broken links
+        run: |
+          mkdocs serve &
+          sleep 5
+          linkchecker http://localhost:8000 --no-warnings --ignore-url=example.com
+        continue-on-error: true
+
+      - name: Validate navigation
+        run: |
+          python -c "
+          import yaml
+          with open('mkdocs.yml', 'r') as f:
+              config = yaml.safe_load(f)
+              nav = config.get('nav', [])
+              print(f'Navigation contains {len(nav)} top-level items')
+              assert len(nav) > 0, 'Navigation is empty'
+          "
+
+      - name: Check for missing files
+        run: |
+          python -c "
+          import yaml
+          import os
+          from pathlib import Path
+          
+          with open('mkdocs.yml', 'r') as f:
+              config = yaml.safe_load(f)
+          
+          def check_nav(items, prefix=''):
+              for item in items:
+                  if isinstance(item, dict):
+                      for key, value in item.items():
+                          if isinstance(value, str):
+                              file_path = os.path.join('docs', value)
+                              if not os.path.exists(file_path):
+                                  print(f'Warning: Missing file: {file_path}')
+                          elif isinstance(value, list):
+                              check_nav(value, key)
+          
+          nav = config.get('nav', [])
+          check_nav(nav)
+          print('File check complete')
+          "
+
