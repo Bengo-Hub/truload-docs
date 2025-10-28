@@ -10,8 +10,18 @@ Thank you for your interest in improving the TruLoad documentation!
    git clone https://github.com/YOUR_USERNAME/truload-docs.git
    cd truload-docs
    ```
-3. Install dependencies:
+3. Set up virtual environment:
    ```bash
+   # Create virtual environment
+   python -m venv venv
+   
+   # Activate virtual environment
+   # Windows
+   venv\Scripts\activate
+   # Linux/macOS
+   source venv/bin/activate
+   
+   # Install dependencies
    pip install -r requirements.txt
    ```
 4. Create a branch:
@@ -66,14 +76,23 @@ def example_function():
 
 ## Testing Your Changes
 
-1. Build locally:
+1. Activate virtual environment (if not already active):
+   ```bash
+   # Windows
+   venv\Scripts\activate
+   # Linux/macOS
+   source venv/bin/activate
+   ```
+
+2. Build locally:
    ```bash
    mkdocs serve
    ```
-2. Open http://localhost:8000
-3. Verify all links work
-4. Check navigation
-5. Review formatting
+
+3. Open http://localhost:8000
+4. Verify all links work
+5. Check navigation
+6. Review formatting
 
 ## Submitting Changes
 

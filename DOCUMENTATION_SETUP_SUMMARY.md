@@ -227,6 +227,15 @@ Features:
 git clone https://github.com/Bengo-Hub/truload-docs.git
 cd truload-docs
 
+# Create and activate virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows
+venv\Scripts\activate
+# Linux/macOS
+source venv/bin/activate
+
 # Install dependencies
 pip install -r requirements.txt
 
@@ -234,12 +243,17 @@ pip install -r requirements.txt
 mkdocs serve
 
 # Open browser
-http://localhost:8000
+# Windows: start http://localhost:8000
+# Linux/macOS: open http://localhost:8000
 ```
 
 ### Build Static Site
 
 ```bash
+# Ensure virtual environment is activated
+# Windows: venv\Scripts\activate
+# Linux/macOS: source venv/bin/activate
+
 # Build documentation
 mkdocs build
 
@@ -250,6 +264,10 @@ ls site/
 ### Deploy
 
 ```bash
+# Ensure virtual environment is activated
+# Windows: venv\Scripts\activate
+# Linux/macOS: source venv/bin/activate
+
 # Deploy to GitHub Pages
 mkdocs gh-deploy
 

@@ -16,6 +16,15 @@ Comprehensive documentation for the TruLoad Intelligent Weighing and Enforcement
 ### View Documentation Locally
 
 ```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows
+venv\Scripts\activate
+# Linux/macOS
+source venv/bin/activate
+
 # Install dependencies
 pip install -r requirements.txt
 
@@ -23,12 +32,19 @@ pip install -r requirements.txt
 mkdocs serve
 
 # Open in browser
+# Windows
+start http://localhost:8000
+# Linux/macOS
 open http://localhost:8000
 ```
 
 ### Build Static Site
 
 ```bash
+# Ensure virtual environment is activated
+# Windows: venv\Scripts\activate
+# Linux/macOS: source venv/bin/activate
+
 # Build documentation
 mkdocs build
 
@@ -39,11 +55,16 @@ ls site/
 ### Deploy to GitHub Pages
 
 ```bash
+# Ensure virtual environment is activated
+# Windows: venv\Scripts\activate
+# Linux/macOS: source venv/bin/activate
+
 # Deploy to GitHub Pages
 mkdocs gh-deploy
 
 # Or use mike for versioning
 mike deploy --push --update-aliases 1.0 latest
+mike set-default --push latest
 ```
 
 ## 🏗️ Structure
@@ -300,11 +321,21 @@ View live reports at: [Test Reports](docs/testing/reports.md)
 
 ### Adding New Documentation
 
-1. Create a new Markdown file in the appropriate directory
-2. Add entry to `mkdocs.yml` navigation
-3. Follow the style guide
-4. Test locally with `mkdocs serve`
-5. Submit pull request
+1. Set up your environment:
+   ```bash
+   python -m venv venv
+   # Windows
+   venv\Scripts\activate
+   # Linux/macOS
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. Create a new Markdown file in the appropriate directory
+3. Add entry to `mkdocs.yml` navigation
+4. Follow the style guide
+5. Test locally with `mkdocs serve`
+6. Submit pull request
 
 ### Documentation Style Guide
 
