@@ -1,73 +1,30 @@
-name: Deploy Documentation
+name: Build and Deploy TruLoad Docs
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 jobs:
-  build:
-    name: Build Documentation
+  validate:
+    name: Validate and build docs
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for git-revision-date-localized
+          fetch-depth: 0
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Build documentation
-        run: mkdocs build --strict
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: site/
-
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
-
-  test:
-    name: Test Documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-          cache: 'pip'
+          python-version: "3.12"
+          cache: pip
 
       - name: Install dependencies
         run: |
@@ -75,50 +32,108 @@ jobs:
           pip install -r requirements.txt
           pip install linkchecker
 
-      - name: Build documentation
+      - name: Validate navigation and file presence
+        run: |
+          python - <<'PY'
+          import os, sys, yaml
+          with open("mkdocs.yml") as f:
+              cfg = yaml.safe_load(f)
+          missing = []
+          def walk(items):
+              for i in items:
+                  if isinstance(i, dict):
+                      for _, v in i.items():
+                          if isinstance(v, str) and not os.path.exists(os.path.join("docs", v)):
+                              missing.append(v)
+                          elif isinstance(v, list):
+                              walk(v)
+                  elif isinstance(i, str) and not os.path.exists(os.path.join("docs", i)):
+                      missing.append(i)
+          walk(cfg.get("nav", []))
+          if missing:
+              print("Missing nav files:")
+              for m in missing:
+                  print(f"  {m}")
+              sys.exit(1)
+          print("All nav files exist.")
+          PY
+
+      - name: Build (strict)
         run: mkdocs build --strict
 
-      - name: Check for broken links
-        run: |
-          mkdocs serve &
-          sleep 5
-          linkchecker http://localhost:8000 --no-warnings --ignore-url=example.com
-        continue-on-error: true
+      - name: Link check
+        run: linkchecker site/ --no-warnings --ignore-url=example.com --ignore-url=github.com || true
 
-      - name: Validate navigation
-        run: |
-          python -c "
-          import yaml
-          with open('mkdocs.yml', 'r') as f:
-              config = yaml.safe_load(f)
-              nav = config.get('nav', [])
-              print(f'Navigation contains {len(nav)} top-level items')
-              assert len(nav) > 0, 'Navigation is empty'
-          "
+  build-image:
+    name: Build and push docs image
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.vars.outputs.sha_short }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Check for missing files
-        run: |
-          python -c "
-          import yaml
-          import os
-          from pathlib import Path
-          
-          with open('mkdocs.yml', 'r') as f:
-              config = yaml.safe_load(f)
-          
-          def check_nav(items, prefix=''):
-              for item in items:
-                  if isinstance(item, dict):
-                      for key, value in item.items():
-                          if isinstance(value, str):
-                              file_path = os.path.join('docs', value)
-                              if not os.path.exists(file_path):
-                                  print(f'Warning: Missing file: {file_path}')
-                          elif isinstance(value, list):
-                              check_nav(value, key)
-          
-          nav = config.get('nav', [])
-          check_nav(nav)
-          print('File check complete')
-          "
+      - name: Set variables
+        id: vars
+        run: echo "sha_short=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            docker.io/codevertex/truload-docs:${{ steps.vars.outputs.sha_short }}
+            docker.io/codevertex/truload-docs:latest
+          build-args: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  bump-gitops:
+    name: Bump image tag in devops-k8s
+    needs: build-image
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout devops-k8s
+        uses: actions/checkout@v4
+        with:
+          repository: Bengo-Hub/devops-k8s
+          token: ${{ secrets.GH_PAT }}
+          path: devops-k8s
+
+      - name: Bump values.yaml image tag
+        run: |
+          set -e
+          cd devops-k8s
+          FILE=apps/truload-docs/values.yaml
+          python - <<PY
+          import re, sys
+          tag = "${{ needs.build-image.outputs.image_tag }}"
+          with open("$FILE") as f:
+              src = f.read()
+          new = re.sub(r"(\n\s*tag:\s*)\S+", rf"\g<1>{tag}", src, count=1)
+          with open("$FILE", "w") as f:
+              f.write(new)
+          PY
+          git config user.name  "${{ secrets.GIT_USER  || 'TruLoad Bot' }}"
+          git config user.email "${{ secrets.GIT_EMAIL || 'dev@truload.io' }}"
+          git add $FILE
+          git commit -m "chore(truload-docs): bump image tag to ${{ needs.build-image.outputs.image_tag }}"
+          git push origin main

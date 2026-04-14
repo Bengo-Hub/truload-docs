@@ -70,7 +70,7 @@ Features:
 
 Access Points:
 - Development: `https://localhost:7001/swagger`
-- Production: `https://api.truload.example.com/swagger`
+- Production: `https://kuraweighapitest.masterspace.co.ke/swagger`
 
 ### 2. **OpenAPI Specification** ✅
 
@@ -87,14 +87,14 @@ Features:
 Downloadable Files:
 ```bash
 # Production
-curl -o openapi.json https://api.truload.example.com/swagger/v1/swagger.json
+curl -o openapi.json https://kuraweighapitest.masterspace.co.ke/swagger/v1/swagger.json
 
 # Import to Postman
-https://api.truload.example.com/swagger/v1/swagger.json
+https://kuraweighapitest.masterspace.co.ke/swagger/v1/swagger.json
 
 # Generate TypeScript client
 openapi-generator-cli generate \
-  -i https://api.truload.example.com/swagger/v1/swagger.json \
+  -i https://kuraweighapitest.masterspace.co.ke/swagger/v1/swagger.json \
   -g typescript-axios \
   -o ./truload-client-ts
 ```
@@ -318,7 +318,7 @@ app.UseSwaggerUI(c =>
 
 Access at:
 - Development: `https://localhost:7001/swagger`
-- Production: `https://api.truload.example.com/swagger`
+- Production: `https://kuraweighapitest.masterspace.co.ke/swagger`
 
 ### Test Reports Integration
 

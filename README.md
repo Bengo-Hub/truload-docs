@@ -294,14 +294,14 @@ mike delete --push 0.9
 The documentation includes links to the live Swagger UI:
 
 - Development: `https://localhost:7001/swagger`
-- Production: `https://api.truload.example.com/swagger`
+- Production: `https://kuraweighapitest.masterspace.co.ke/swagger`
 
 ### OpenAPI Specification
 
 Download OpenAPI spec for Postman/Insomnia:
 
 ```bash
-curl -o openapi.json https://api.truload.example.com/swagger/v1/swagger.json
+curl -o openapi.json https://kuraweighapitest.masterspace.co.ke/swagger/v1/swagger.json
 ```
 
 See [OpenAPI Documentation](docs/technical/api/openapi.md) for detailed instructions.

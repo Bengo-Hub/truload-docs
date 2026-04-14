@@ -1,0 +1,31 @@
+{
+  "name": "truload-docs",
+  "version": "1.0.0",
+  "description": "Comprehensive documentation for the TruLoad Intelligent Weighing and Enforcement Solution.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "docs:build": "mkdocs build",
+    "fetch-releases": "node scripts/fetch-releases.mjs",
+    "pdf:export": "node scripts/export-pdf.mjs",
+    "build": "node scripts/fetch-releases.mjs && mkdocs build --strict && node scripts/export-pdf.mjs",
+    "pdf:all": "mkdocs build && node scripts/export-pdf.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bengo-Hub/truload-docs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Bengo-Hub/truload-docs/issues"
+  },
+  "homepage": "https://github.com/Bengo-Hub/truload-docs#readme",
+  "dependencies": {
+    "playwright": "^1.59.1"
+  }
+}

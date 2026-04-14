@@ -1,0 +1,11 @@
+.git
+.github
+.cursor
+env
+venv
+site
+node_modules
+**/__pycache__
+**/*.pyc
+.vscode
+*.log
