@@ -72,7 +72,7 @@ jobs:
 
   sync-secrets:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name != 'pull_request'
     outputs:
       result: ${{ steps.sync.outputs.result }}
     steps:
@@ -161,7 +161,7 @@ jobs:
   build-image:
     name: Build and push docs image
     needs: [validate, sync-secrets]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -329,7 +329,7 @@ jobs:
   bump-gitops:
     name: Bump image tag in devops-k8s
     needs: build-image
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && needs.build-image.outputs.image_tag != ''
+    if: github.event_name != 'pull_request' && needs.build-image.outputs.image_tag != ''
     runs-on: ubuntu-latest
     steps:
       - name: Checkout devops-k8s
@@ -362,7 +362,7 @@ jobs:
   check-argocd:
     name: Check ArgoCD Application status
     needs: bump-gitops
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Check ArgoCD Application status
