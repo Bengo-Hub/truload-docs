@@ -3,17 +3,13 @@
 ## Hosting
 
 TruLoad runs on a single-node Kubernetes cluster hosted on Contabo Cloud VPS
-(Nuremberg, Germany), managed via GitOps from
-[`Bengo-Hub/devops-k8s`](https://github.com/Bengo-Hub/devops-k8s).
+(Nuremberg, Germany), managed via GitOps.
 
 | Item | Value |
 |---|---|
 | Provider | Contabo GmbH |
 | Region | EU — Nuremberg, Germany |
-| External IP | `77.237.232.66` |
-| Host | `mss-prod-master` |
-| OS | Ubuntu 24.04.4 LTS |
-| Kernel | `6.8.0-106-generic` |
+| OS | Ubuntu 24.04 LTS |
 | Kubernetes | `v1.30.14`, single control-plane node |
 | Container runtime | containerd `2.2.2` |
 | CPU | 12 vCPU (AMD EPYC) |
@@ -21,14 +17,14 @@ TruLoad runs on a single-node Kubernetes cluster hosted on Contabo Cloud VPS
 | Disk | 484 GB (local-path storage class) |
 | Ingress | NGINX |
 | Certificates | cert-manager + Let's Encrypt (`letsencrypt-prod` ClusterIssuer) |
-| GitOps | ArgoCD at `argocd.codevertexitsolutions.com` |
+| GitOps | ArgoCD |
 
 ## Hostnames
 
 | Environment | Backend API | Frontend | Docs |
 |---|---|---|---|
-| Test | `kuraweighapitest.masterspace.co.ke` | `kuraweightest.masterspace.co.ke` | `kuraweigh-docs.masterspace.co.ke` |
-| Production | `truloadapi.codevertexitsolutions.com` | `truload.codevertexitsolutions.com` | `truload-docs.codevertexitsolutions.com` |
+| Test | [kuraweighapitest.masterspace.co.ke](https://kuraweighapitest.masterspace.co.ke) | [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke) | [kuraweigh-docs.masterspace.co.ke](https://kuraweigh-docs.masterspace.co.ke) |
+| Production | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [truload.codevertexitsolutions.com](https://truload.codevertexitsolutions.com) | [truload-docs.codevertexitsolutions.com](https://truload-docs.codevertexitsolutions.com) |
 
 Every host terminates TLS via a cert-manager-issued Let's Encrypt
 certificate, served through the shared NGINX ingress class.
@@ -68,8 +64,8 @@ Shared infrastructure in the `infra` namespace:
 | Backups | Nightly, retained 7 days | Nightly, retained 30 days |
 
 Secrets are never committed. They live as plain Kubernetes `Secret`
-objects; the only writer is
-[`devops-k8s/.github/workflows/sync-secrets.yml`](https://github.com/Bengo-Hub/devops-k8s/blob/main/.github/workflows/sync-secrets.yml).
+objects, synced via a dedicated GitHub Actions workflow in the GitOps
+repository.
 
 ## Deploy flow
 
@@ -91,10 +87,10 @@ see [Backup, DR and Troubleshooting](backup-dr-troubleshooting.md).
 
 ## References
 
-- Backend app manifest: [`devops-k8s/apps/truload-backend/app.yaml`](https://github.com/Bengo-Hub/devops-k8s/blob/main/apps/truload-backend/app.yaml)
-- Frontend app manifest: [`devops-k8s/apps/truload-frontend/app.yaml`](https://github.com/Bengo-Hub/devops-k8s/blob/main/apps/truload-frontend/app.yaml)
-- Docs app manifest: [`devops-k8s/apps/truload-docs/app.yaml`](https://github.com/Bengo-Hub/devops-k8s/blob/main/apps/truload-docs/app.yaml)
-- Shared Helm chart: [`devops-k8s/charts/app/`](https://github.com/Bengo-Hub/devops-k8s/tree/main/charts/app)
-- Cluster issuer: [`devops-k8s/manifests/cert-manager-clusterissuer.yaml`](https://github.com/Bengo-Hub/devops-k8s/blob/main/manifests/cert-manager-clusterissuer.yaml)
+- Backend app manifest: `devops-k8s/apps/truload-backend/app.yaml`
+- Frontend app manifest: `devops-k8s/apps/truload-frontend/app.yaml`
+- Docs app manifest: `devops-k8s/apps/truload-docs/app.yaml`
+- Shared Helm chart: `devops-k8s/charts/app/`
+- Cluster issuer: `devops-k8s/manifests/cert-manager-clusterissuer.yaml`
 
 ![Integrations settings](../media/integrations/integrations.png)

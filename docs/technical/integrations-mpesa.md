@@ -13,8 +13,7 @@
    settlement.
 2. Backend posts the invoice to Pesaflow at
    `pesaflow.ecitizen.go.ke/PaymentAPI/iframev2.1.php` with a secure
-   hash computed per
-   [PESAFLOW_INTEGRATION_GUIDE.md](https://github.com/Bengo-Hub/truload-backend/blob/main/docs/integrations/PESAFLOW_INTEGRATION_GUIDE.md).
+   hash computed per the Pesaflow integration guide.
 3. Pesaflow returns a checkout URL; the frontend opens it in a dialog.
 4. Payer authorises the STK push on their phone.
 5. Pesaflow posts back to
@@ -73,8 +72,7 @@ Results are tracked on [Live E2E Results](../testing/live-e2e-results.md).
 
 ## See also
 
-- [PESAFLOW_INTEGRATION_GUIDE.md](https://github.com/Bengo-Hub/truload-backend/blob/main/docs/integrations/PESAFLOW_INTEGRATION_GUIDE.md)
-  (secure-hash computation, field mapping)
+- Pesaflow integration guide (secure-hash computation, field mapping)
 - [Live E2E results](../testing/live-e2e-results.md)
 - [Swagger UI](api/swagger.md) · [live Swagger (test)](https://kuraweighapitest.masterspace.co.ke/v1/docs/index.html)
   — try the `payments/*` endpoints directly

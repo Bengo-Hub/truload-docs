@@ -17,7 +17,7 @@ a test that exercises it. This matrix keeps the three in step.
 
 ## Screenshot coverage
 
-Screenshots live under [`docs/media/`](https://github.com/Bengo-Hub/truload-docs/tree/main/docs/media)
+Screenshots live under `docs/media/`
 and are embedded inline in the user guide and operations chapters that
 reference them. Folders: `auth`, `weighing`, `caseregister`,
 `casemanagement`, `prosecution`, `reports`, `setup`, `truconnect`,

@@ -5,8 +5,7 @@
 Authentication and authorization:
 
 - JWT access tokens, rotating refresh tokens, short TTL.
-- Permission-based authorization via
-  [`PermissionRequirementHandler`](https://github.com/Bengo-Hub/truload-backend/blob/main/Authorization/Handlers/PermissionRequirementHandler.cs)
+- Permission-based authorization via `PermissionRequirementHandler`
   and `[PermissionAttribute]` on every controller action.
 - Roles split between tenant-visible and system-only via `IsSystemRole`;
   system-sensitive permissions hidden from non-superusers.
@@ -21,16 +20,15 @@ Transport and secrets:
 - Integration credentials (Pesaflow API key, NTSA tokens, scale middleware
   secrets) encrypted at rest with a per-install data-protection key; never
   returned in API responses.
-- Secrets mounted from Kubernetes Secret objects synced out of
-  `devops-k8s`; never committed.
+- Secrets mounted from Kubernetes Secret objects synced via the GitOps
+  repository; never committed.
 
 ![Rate limiting](../media/security/rate-limiting.png)
 
 Auditability:
 
 - Audit log records every create, update, and approve on financial, case,
-  and prosecution records; see
-  [`AuditLogController`](https://github.com/Bengo-Hub/truload-backend/blob/main/Controllers/AuditLogController.cs).
+  and prosecution records; see `AuditLogController`.
 - Every request is tagged with a correlation ID surfaced in error
   responses for traceability.
 
@@ -44,8 +42,8 @@ Backups:
 
 ## Assessment status
 
-The most recent internal audit is
-[`truload-backend/docs/AUDIT_SUMMARY_REPORT.md`](https://github.com/Bengo-Hub/truload-backend/blob/main/docs/AUDIT_SUMMARY_REPORT.md)
+The most recent internal audit is documented in
+`truload-backend/docs/AUDIT_SUMMARY_REPORT.md`
 (dated 2026-01-22, updated 2026-01-23). Findings with a security impact:
 
 | Finding | Severity | Status |

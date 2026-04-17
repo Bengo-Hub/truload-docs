@@ -1,6 +1,6 @@
 # Frontend releases
 
-Source: <https://github.com/Bengo-Hub/truload-frontend/releases>
+Source: GitHub Releases (truload-frontend)
 
 <!-- BEGIN:release-notes:truload-frontend -->
 _No releases fetched yet. Run the docs build to populate._

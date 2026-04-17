@@ -11,18 +11,20 @@ theme:
     - navigation.indexes
     - content.code.copy
     - search.highlight
+  logo: media/truload-logo.svg
+  favicon: media/truload-logo.svg
   icon:
     repo: fontawesome/brands/github
   palette:
     - scheme: default
-      primary: indigo
-      accent: indigo
+      primary: blue
+      accent: blue
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: blue
+      accent: blue
       toggle:
         icon: material/brightness-4
         name: Switch to light mode

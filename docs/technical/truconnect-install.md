@@ -13,10 +13,8 @@ a new workstation, or updates an existing install.
 TruConnect is released through GitHub Releases. Every release has a signed
 Windows NSIS installer attached.
 
-- Latest release: <https://github.com/Bengo-Hub/TruConnect/releases/latest>
-- Release history: <https://github.com/Bengo-Hub/TruConnect/releases>
-- A specific version: `https://github.com/Bengo-Hub/TruConnect/releases/tag/<version_tag>`
-  (for example, `v2.0.80`).
+Download the latest release from the TruConnect GitHub Releases page.
+Each release includes a signed Windows NSIS installer.
 
 Download `TruConnect-<version>-Setup.exe` from the `Assets` section of the
 chosen release.

@@ -27,10 +27,3 @@ and run. It is the reference for platform engineers, SREs, and integrators.
 
 - [Swagger](api/swagger.md) — live endpoint explorer.
 - [OpenAPI](api/openapi.md) — downloadable contract.
-
-## Source repositories
-
-- `truload-backend`: <https://github.com/Bengo-Hub/truload-backend>
-- `truload-frontend`: <https://github.com/Bengo-Hub/truload-frontend>
-- `TruConnect`: <https://github.com/Bengo-Hub/TruConnect>
-- GitOps: <https://github.com/Bengo-Hub/devops-k8s>

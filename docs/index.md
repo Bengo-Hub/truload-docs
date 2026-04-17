@@ -45,8 +45,7 @@
 `TruConnect`
 : Windows desktop bridge. Reads the physical scale over serial, TCP,
   UDP, or HTTP and streams weights to the browser over a local WebSocket.
-  Distributed as a signed installer on
-  [GitHub Releases](https://github.com/Bengo-Hub/TruConnect/releases).
+  Distributed as a signed Windows installer.
 
 `Transporter Portal`
 : Self-service web interface for transporters and haulers. Cross-tenant
@@ -67,11 +66,10 @@
 <a class="md-button" href="pdf/User-Manual.pdf">:material-file-pdf-box: User Guide (PDF)</a>
 <a class="md-button" href="pdf/Technical-Operations-Manual.pdf">:material-file-pdf-box: Operations Guide (PDF)</a>
 <a class="md-button" href="pdf/Client-Evidence-Pack.pdf">:material-file-pdf-box: Compliance Pack (PDF)</a>
-<a class="md-button" href="https://github.com/Bengo-Hub/TruConnect/releases/latest">:material-download: TruConnect installer</a>
 
 ## Environments
 
 | Environment | Backend API | Frontend | Docs |
 |---|---|---|---|
-| Test | `kuraweighapitest.masterspace.co.ke` | `kuraweightest.masterspace.co.ke` | `kuraweigh-docs.masterspace.co.ke` |
-| Production | `truloadapi.codevertexitsolutions.com` | `truload.codevertexitsolutions.com` | `truload-docs.codevertexitsolutions.com` |
+| Test | [kuraweighapitest.masterspace.co.ke](https://kuraweighapitest.masterspace.co.ke) | [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke) | [kuraweigh-docs.masterspace.co.ke](https://kuraweigh-docs.masterspace.co.ke) |
+| Production | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [truload.codevertexitsolutions.com](https://truload.codevertexitsolutions.com) | [truload-docs.codevertexitsolutions.com](https://truload-docs.codevertexitsolutions.com) |

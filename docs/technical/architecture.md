@@ -111,9 +111,6 @@ Pluggable adapter model:
 
 ## See also
 
-- [`truload-backend/docs/plan.md`](https://github.com/Bengo-Hub/truload-backend/blob/main/docs/plan.md)
-- [`truload-backend/docs/erd.md`](https://github.com/Bengo-Hub/truload-backend/blob/main/docs/erd.md)
-- [`TruConnect/docs/architecture.md`](https://github.com/Bengo-Hub/TruConnect/blob/main/docs/architecture.md)
 - [Swagger UI](api/swagger.md) · [live Swagger (test)](https://kuraweighapitest.masterspace.co.ke/v1/docs/index.html)
 
 ![Weighing](../media/weighing/weighing_screen.png)

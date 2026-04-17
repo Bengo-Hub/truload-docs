@@ -2,8 +2,8 @@
 
 ## Target hosts
 
-- Backend: `https://kuraweighapitest.masterspace.co.ke`
-- Frontend: `https://kuraweightest.masterspace.co.ke`
+- Backend: [kuraweighapitest.masterspace.co.ke](https://kuraweighapitest.masterspace.co.ke)
+- Frontend: [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke)
 
 ## Latest run — 2026-04-14
 

@@ -19,8 +19,3 @@ is pulled from GitHub Releases on every documentation build.
   commits), and the signed Windows installer is uploaded as a release
   asset.
 
-## Upstream
-
-- <https://github.com/Bengo-Hub/truload-backend/releases>
-- <https://github.com/Bengo-Hub/truload-frontend/releases>
-- <https://github.com/Bengo-Hub/TruConnect/releases>
