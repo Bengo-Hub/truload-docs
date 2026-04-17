@@ -1,5 +1,5 @@
 site_name: TruLoad Documentation
-site_description: User guide, operations guide, and API reference for the TruLoad weighbridge platform.
+site_description: Weighbridge platform for axle-load enforcement and commercial weighing operations.
 site_author: TruLoad
 
 theme:
@@ -11,6 +11,21 @@ theme:
     - navigation.indexes
     - content.code.copy
     - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
 
 plugins:
   - search
@@ -23,6 +38,9 @@ plugins:
 markdown_extensions:
   - admonition
   - tables
+  - attr_list
+  - md_in_html
+  - def_list
   - toc:
       permalink: true
   - pymdownx.details
@@ -31,34 +49,55 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
   - Home: index.md
-  - User Guide:
-      - user-manual/index.md
-      - Auth & access: user-manual/auth-and-access.md
-      - Weighing: user-manual/weighing.md
-      - Cases & prosecution: user-manual/case-and-prosecution.md
-      - Financial & reports: user-manual/financial-and-reports.md
-      - Setup, RBAC & TruConnect: user-manual/setup-rbac-truconnect.md
-      - Install TruConnect: user-manual/truconnect-install.md
-      - Troubleshooting: user-manual/troubleshooting.md
+  - Enforcement:
+      - enforcement/index.md
+      - Auth & Access: enforcement/auth-and-access.md
+      - Weighing: enforcement/weighing.md
+      - Cases & Prosecution: enforcement/case-and-prosecution.md
+      - Financial & Reports: enforcement/financial-and-reports.md
+      - Setup & Configuration: enforcement/setup-rbac-truconnect.md
+  - Commercial Weighing:
+      - commercial/index.md
+      - Getting Started: commercial/getting-started.md
+      - Two-Pass Weighing: commercial/two-pass-weighing.md
+      - Tare Management: commercial/tare-management.md
+      - Weight Tickets: commercial/weight-tickets.md
+      - Reports: commercial/reports.md
+      - Setup & Configuration: commercial/setup.md
+  - Transporter Portal:
+      - portal/index.md
+      - Registration: portal/registration.md
+      - Weighing History: portal/weighing-history.md
+      - Subscriptions: portal/subscriptions.md
   - Operations:
       - technical/index.md
       - Architecture: technical/architecture.md
       - Deployment: technical/deployment-and-environments.md
       - Security: technical/security-assurance.md
       - Integrations (M-PESA): technical/integrations-mpesa.md
-      - Backup, DR & troubleshooting: technical/backup-dr-troubleshooting.md
+      - Backup, DR & Troubleshooting: technical/backup-dr-troubleshooting.md
+      - TruConnect Install: technical/truconnect-install.md
+      - Troubleshooting: technical/troubleshooting.md
   - API Reference:
       - Swagger: technical/api/swagger.md
       - OpenAPI: technical/api/openapi.md
   - Testing:
       - testing/index.md
-      - Test suites: testing/reports.md
-      - Live E2E results: testing/live-e2e-results.md
+      - Test Suites: testing/reports.md
+      - Live E2E Results: testing/live-e2e-results.md
       - Traceability: testing/traceability-matrix.md
-      - Compliance checklist: testing/compliance-checklist.md
+      - Compliance Checklist: testing/compliance-checklist.md
   - Releases:
       - release-notes/index.md
       - Backend: release-notes/backend.md
