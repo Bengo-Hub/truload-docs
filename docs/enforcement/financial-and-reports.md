@@ -78,4 +78,4 @@ Common reports and who reads them:
 - Invoice status is consistent with payment channel callback status.
 - Receipt exists for settled invoices and is uniquely referenced.
 - Case/prosecution progression aligns with payment completion.
-- Any failed/pending payments are documented and retried per SOP.
+- Outstanding payments are documented and retried per SOP.

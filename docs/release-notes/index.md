@@ -9,13 +9,11 @@ is pulled from GitHub Releases on every documentation build.
 
 ## How releases happen
 
-- **`truload-backend`** and **`truload-frontend`** use
-  [release-please](https://github.com/googleapis/release-please). Every
-  merge to `main` updates a rolling "release PR" collecting
-  conventional-commit entries. Merging that PR cuts the tag, writes
-  `CHANGELOG.md`, and publishes the GitHub Release.
-- **TruConnect** uses `scripts/release.sh` plus `electron-builder`. A
-  patch release is cut on every merge to `master` (excluding release
-  commits), and the signed Windows installer is uploaded as a release
-  asset.
+- **`truload-backend`** and **`truload-frontend`** follow a
+  continuous-release model. Each change to the main branch is
+  automatically collected into a versioned release with a changelog
+  and published as a GitHub Release.
+- **TruConnect** is released as a signed Windows installer. Each
+  version is published as a downloadable asset on the GitHub Releases
+  page.
 

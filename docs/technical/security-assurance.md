@@ -48,13 +48,13 @@ The most recent internal audit is documented in
 
 | Finding | Severity | Status |
 |---|---|---|
-| Axle-group aggregation (data integrity) | P0 | Closed — Sprint 11 |
-| Per-axle-type fee calculation (financial correctness) | P0 | Closed — Sprint 11 |
-| Demerit-points tracking (audit completeness) | P0 | Closed — Sprint 11 |
-| Dual-table weight-ticket format (evidentiary) | P1 | In progress — Sprint 12 |
-| Case subfile A–J completeness (evidentiary) | P1 | In progress — Sprint 12 |
-| NGINX + per-principal API rate limiting | P2 | Configuration landed; tuning in progress |
-| External penetration test | — | Scheduled, report pending |
+| Axle-group aggregation (data integrity) | P0 | Resolved |
+| Per-axle-type fee calculation (financial correctness) | P0 | Resolved |
+| Demerit-points tracking (audit completeness) | P0 | Resolved |
+| Dual-table weight-ticket format (evidentiary) | P1 | In progress |
+| Case subfile A-J completeness (evidentiary) | P1 | In progress |
+| NGINX + per-principal API rate limiting | P2 | Deployed; tuning in progress |
+| External penetration test | -- | Scheduled, report pending |
 
 ## Verification checklist
 

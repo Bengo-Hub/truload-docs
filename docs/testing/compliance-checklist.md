@@ -13,12 +13,12 @@ Status of the acceptance items the platform is measured against.
 
 - [x] Controls documented — see [Security](../technical/security-assurance.md#controls).
 - [x] Internal audit findings and closure status published.
-- [x] Sprint 11 closed every P0 security-impacting finding.
+- [x] All P0 security-impacting findings resolved.
 
 ## M-PESA integration
 
 - [x] Integration flow documented — see [Integrations (M-PESA)](../technical/integrations-mpesa.md).
-- [x] Happy path run against the test host — see [Live E2E results](live-e2e-results.md).
+- [x] Happy-path run verified — see [Live End-to-End Results](live-e2e-results.md).
 - [x] Callback success/failure/timeout handlers probed.
 - [x] Reconciliation + idempotency covered by `pesaflow_callback_reconciliation_e2e.py`.
 - [x] Direct Pesaflow API (OAuth, invoice, status) validated by `pesaflow_api_test.py`.

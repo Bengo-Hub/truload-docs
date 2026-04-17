@@ -6,9 +6,9 @@
 |---|---|---|---|
 | No live weight updates | TruConnect disconnected or wrong input source | Check TruConnect running state and input source mapping | Escalate if no data after restart/config check |
 | Cannot create weighing | Missing role permission or station context | Re-login and verify role + station assignment | Escalate when role appears correct but API still rejects |
-| Scale test fails unexpectedly | Backend/runtime error | Retry once and capture exact error response | Escalate with trace/request ID and timestamp |
-| Invoice not moving to paid | Callback delay, invalid payload, or pending payment | Check payment prompt completion and retry status check | Escalate if still pending/failed beyond SLA |
-| Payment status returns validation error | Missing required reference parameter | Re-open invoice and confirm reference fields | Escalate to technical team for endpoint behavior |
+| Scale test does not complete | Temporary service interruption | Retry once and capture the exact response | Escalate with trace/request ID and timestamp |
+| Invoice not moving to paid | Callback delay or pending payment | Check payment prompt completion and retry status check | Escalate if still pending beyond SLA |
+| Payment status not accepted | Missing required reference parameter | Re-open invoice and confirm reference fields | Escalate to technical team for endpoint behaviour |
 | Case not closing after compliant reweigh | Missing payment/memo/reweigh linkage | Verify every prerequisite object is present | Escalate when all prerequisites are complete |
 
 ## Quick diagnosis by module

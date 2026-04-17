@@ -6,8 +6,8 @@
 : Inventory of every automated and manual test suite in the three code
   repositories, with paths and scope.
 
-[Live E2E results](live-e2e-results.md)
-: Results from the most recent controlled run against the test host.
+[Live End-to-End Results](live-e2e-results.md)
+: Results from the most recent controlled verification run.
 
 [Traceability](traceability-matrix.md)
 : Mapping from each workflow to its source code, documentation page, and
@@ -20,13 +20,13 @@
 
 - **Unit and integration.** xUnit on the backend, Vitest on the frontend,
   Node test runner on TruConnect. Run on every CI build.
-- **Compliance E2E.** Fourteen-step flow: login → autoweigh → case
-  auto-creation → yard entry → prosecution → invoicing → payment →
-  reweigh → auto-close. Source: `truload-backend/Tests/e2e/compliancee2e/`.
+- **Compliance end-to-end.** Fourteen-step flow: login, autoweigh, case
+  auto-creation, yard entry, prosecution, invoicing, payment,
+  reweigh, auto-close.
 - **Pesaflow / M-PESA.** Three suites cover the direct Pesaflow API,
-  backend-mediated invoice push and status, and callback + reconciliation
-  handling. Source: `truload-backend/Tests/e2e/pesaflow_*.py`.
-- **Playwright smoke.** Login, weighing capture, prosecution settlement,
-  receipts. Source: `truload-frontend/e2e/`.
+  backend-mediated invoice push and status, and callback plus reconciliation
+  handling.
+- **Browser smoke.** Login, weighing capture, prosecution settlement,
+  receipts.
 
 ![Prosecution invoicing](../media/prosecution/prosecution-invoicing.png)

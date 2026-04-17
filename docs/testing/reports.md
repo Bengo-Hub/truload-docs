@@ -7,9 +7,9 @@
 | Suite | Path | Scope |
 |---|---|---|
 | Unit + integration | `Tests/` | Controllers, services, fee computation, axle grouping, RBAC guards, callback handlers |
-| Compliance E2E | `Tests/e2e/compliancee2e/` | 14-step flow: login → autoweigh → case auto-create → yard → prosecution → invoice → payment → reweigh → auto-close |
+| Compliance end-to-end | `Tests/e2e/compliancee2e/` | 14-step flow: login, autoweigh, case auto-create, yard, prosecution, invoice, payment, reweigh, auto-close |
 | Pesaflow direct API | `Tests/e2e/pesaflow_api_test.py` | OAuth, invoice iframe POST, payment status query against `pesaflow.ecitizen.go.ke` |
-| Pesaflow invoice E2E | `Tests/e2e/pesaflow_invoice_e2e.py` | Backend login, unpaid-invoice selection, push to Pesaflow, status poll |
+| Pesaflow invoice end-to-end | `Tests/e2e/pesaflow_invoice_e2e.py` | Login, unpaid-invoice selection, push to Pesaflow, status poll |
 | Callback / reconciliation | `Tests/e2e/pesaflow_callback_reconciliation_e2e.py` | `api/v1/payments/callback/{success,failure,timeout}` plus `webhook/ecitizen-pesaflow` idempotency |
 
 ### Frontend — `truload-frontend/`
@@ -17,7 +17,7 @@
 | Suite | Path | Scope |
 |---|---|---|
 | Component + hook | `src/**/__tests__/` | React Query hooks, stores, permission-gated navigation, weighing grid |
-| Playwright smoke | `e2e/` | Login, weighing capture, prosecution settlement, receipts |
+| Browser smoke | `e2e/` | Login, weighing capture, prosecution settlement, receipts |
 
 ### TruConnect — `TruConnect/`
 
@@ -44,28 +44,22 @@
 
 ## Quality gates
 
-Test host promotion requires:
+Promotion to the test environment requires:
 
 1. `dotnet test` green.
-2. Frontend `pnpm test` + Playwright smoke green.
+2. Frontend tests and browser smoke pass.
 3. TruConnect `npm test` green.
-4. Compliance E2E runner: fresh 14-step pass against a clean test
+4. Compliance end-to-end runner: fresh 14-step pass against a clean test
    database.
 5. Pesaflow direct API probe: pass against the eCitizen sandbox.
 
 Production promotion additionally requires:
 
-6. Controlled live E2E run against the test host (see
-   [Live E2E Results](live-e2e-results.md)).
-7. Release-manager sign-off recorded against the git tag.
+6. Controlled live end-to-end run against the test environment (see
+   [Live End-to-End Results](live-e2e-results.md)).
+7. Release-manager sign-off recorded against the release tag.
 
-## Open defects
+## Active verification items
 
-Tracked on [Live E2E Results](live-e2e-results.md):
-
-- Compliance runner reports partial on a small number of backend-mediated
-  steps (scale-test creation and tag creation returning `500`).
-- `pesaflow_invoice_e2e.py` needs a filter fix to skip already-paid
-  invoices.
-
-Both are code defects, not documentation gaps.
+See [Live End-to-End Results](live-e2e-results.md) for the status of
+remaining compliance and invoice verification steps.

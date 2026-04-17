@@ -57,7 +57,7 @@ sequenceDiagram
 | `pesaflow_invoice_e2e.py` | Backend-mediated: login, select unpaid invoice, push, poll status |
 | `pesaflow_callback_reconciliation_e2e.py` | Callback success/failure/timeout + webhook idempotency |
 
-Results are tracked on [Live E2E Results](../testing/live-e2e-results.md).
+Results are tracked on [Live End-to-End Results](../testing/live-e2e-results.md).
 
 ## Screenshots
 
@@ -73,6 +73,6 @@ Results are tracked on [Live E2E Results](../testing/live-e2e-results.md).
 ## See also
 
 - Pesaflow integration guide (secure-hash computation, field mapping)
-- [Live E2E results](../testing/live-e2e-results.md)
+- [Live End-to-End Results](../testing/live-e2e-results.md)
 - [Swagger UI](api/swagger.md) · [live Swagger (test)](https://kuraweighapitest.masterspace.co.ke/v1/docs/index.html)
   — try the `payments/*` endpoints directly

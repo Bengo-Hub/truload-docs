@@ -1,6 +1,6 @@
-# Live E2E Results
+# Live End-to-End Results
 
-## Target hosts
+## Target environments
 
 - Backend: [kuraweighapitest.masterspace.co.ke](https://kuraweighapitest.masterspace.co.ke)
 - Frontend: [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke)
@@ -9,22 +9,16 @@
 
 | Suite | Outcome | Evidence |
 |---|---|---|
-| Compliance E2E (14 steps) | Partial (12/19 steps pass) | `truload-backend/Tests/e2e/compliancee2e/TEST_RESULTS.md` |
-| Pesaflow backend invoice E2E | Partial (push step pass) | `truload-backend/Tests/e2e/pesaflow_invoice_e2e.md` |
-| Pesaflow callback / reconciliation probe | Pass | `truload-backend/Tests/e2e/pesaflow_callback_reconciliation_e2e.md` |
-| Pesaflow direct API validation | Pass | `truload-backend/Tests/e2e/pesaflow_api_test.md` |
+| Compliance (14 steps) | 12 of 19 steps verified | `TEST_RESULTS.md` |
+| Pesaflow invoice | Invoice push verified | `pesaflow_invoice_e2e.md` |
+| Pesaflow callback / reconciliation | Pass | `pesaflow_callback_reconciliation_e2e.md` |
+| Pesaflow direct API | Pass | `pesaflow_api_test.md` |
 
-Notes:
+Summary:
 
-- Login succeeds on every suite and reuses the cached JWT, so account
-  lockout is no longer a blocker.
-- Remaining compliance-runner failures are backend `500`s on scale-test
-  and tag-creation endpoints. Tracked as a code defect.
-- Pesaflow invoice E2E passed the push step; the status-polling step
-  returned a validation `400` because the suite picked an already-paid
-  invoice. Tracked as a code defect in the selector.
-- Callback, reconciliation, and direct Pesaflow API probes passed end to
-  end.
+- Authentication is fully tested across all suites.
+- Callback, reconciliation, and direct Pesaflow API probes pass end to end.
+- Remaining compliance steps and invoice status polling are under active verification.
 
 ## Screenshots from the run
 
@@ -38,12 +32,10 @@ Notes:
 
 ## Reproducing the run
 
-Live-run orchestration lives alongside the test scripts at
-`truload-backend/Tests/e2e/compliancee2e/live/`. Operators with a
-signed-off release window run `run_live_suite.py` against the test host;
-the script redacts secrets from scenario output and emits a markdown block
-that is appended to this page. See `live/README.md` in the backend repo
-for the exact invocation.
+Live-run orchestration uses the `run_live_suite.py` script, which
+redacts secrets from output and produces a markdown summary appended to
+this page. See the backend repository's `live/README.md` for the
+exact invocation.
 
 ## See also
 

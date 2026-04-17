@@ -25,10 +25,11 @@ Run once a month against an isolated namespace. The drill is complete when:
 1. The selected dump restores cleanly into a fresh PostgreSQL instance.
 2. The backend comes up against the restored DB and passes its readiness
    probe.
-3. A smoke run of the compliance E2E suite passes against the restored
-   environment.
+3. A smoke run of the compliance end-to-end suite passes against the
+   restored environment.
 
-Record drill outcomes in the ops log; a failed drill is a sev-2 incident.
+Record drill outcomes in the ops log; an unsuccessful drill is a
+sev-2 incident requiring immediate follow-up.
 
 ## Disaster recovery
 

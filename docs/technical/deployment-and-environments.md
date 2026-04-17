@@ -63,27 +63,25 @@ Shared infrastructure in the `infra` namespace:
 | Callback URL | Points at test backend | Points at production backend |
 | Backups | Nightly, retained 7 days | Nightly, retained 30 days |
 
-Secrets are never committed. They live as plain Kubernetes `Secret`
-objects, synced via a dedicated GitHub Actions workflow in the GitOps
-repository.
+Secrets are stored as Kubernetes `Secret` objects, synced via a
+dedicated CI workflow in the GitOps repository. They are never placed
+in version-controlled files.
 
 ## Deploy flow
 
-1. Commit lands on `main` in the app repo.
-2. The app's GitHub Actions workflow builds the container image, pushes it
-   to `docker.io/codevertex/<app>:<short-sha>`, and commits a one-line bump
-   to `apps/<app>/values.yaml` in `devops-k8s`.
-3. ArgoCD detects the change, hard-refreshes, and rolls the workload
-   (`prune: true, selfHeal: true`).
-4. `kubectl rollout status` confirms readiness before the workflow
-   finishes.
+1. A change is merged to the `main` branch in the application repository.
+2. The CI pipeline builds the container image, pushes it to the registry,
+   and updates the image tag in the GitOps repository (`devops-k8s`).
+3. ArgoCD detects the updated tag, refreshes, and rolls the workload
+   automatically.
+4. Readiness is confirmed before the pipeline finishes.
 
 ## Rollback
 
-Revert the `values.yaml` image-tag commit on `devops-k8s`. ArgoCD
-reconciles to the previous image within the minute. If a database
-migration is incompatible, restore from the most recent nightly backup —
-see [Backup, DR and Troubleshooting](backup-dr-troubleshooting.md).
+Revert the image-tag update in the GitOps repository. ArgoCD
+reconciles to the previous image within a minute. If a database
+schema change is incompatible, restore from the most recent nightly
+backup -- see [Backup, DR and Troubleshooting](backup-dr-troubleshooting.md).
 
 ## References
 
