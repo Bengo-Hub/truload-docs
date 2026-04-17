@@ -37,6 +37,10 @@ ARG GITHUB_TOKEN
 ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 RUN node scripts/fetch-releases.mjs || echo "fetch-releases skipped"
 
+# Initialize a git repo so git-revision-date-localized-plugin works.
+# The real .git directory is excluded by Docker build context.
+RUN git init && git add -A && git -c user.name="build" -c user.email="build@ci" commit -m "build" --quiet
+
 RUN mkdocs build --strict
 
 # Generate the three PDFs from the built site and copy them into site/pdf/
