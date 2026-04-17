@@ -42,11 +42,12 @@ RUN node scripts/fetch-releases.mjs || echo "fetch-releases skipped"
 # Strict validation is already handled by the CI validate job.
 RUN mkdocs build
 
-# Generate the three PDFs from the built site and copy them into site/pdf/
-# so they are served alongside the HTML.
-RUN node scripts/export-pdf.mjs \
+# Generate PDFs from the built site (optional — fails open).
+# Playwright PDF export can be flaky in Docker; the site works without PDFs.
+RUN (node scripts/export-pdf.mjs \
  && mkdir -p site/pdf \
- && cp site/exports/*.pdf site/pdf/
+ && cp site/exports/*.pdf site/pdf/) \
+ || echo "PDF export skipped (non-fatal)"
 
 # Stage 2 — minimal NGINX runtime.
 FROM nginx:alpine
