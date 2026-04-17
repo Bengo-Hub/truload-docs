@@ -14,7 +14,7 @@ TruLoad runs on a single-node Kubernetes cluster hosted on Contabo Cloud VPS
 | Host | `mss-prod-master` |
 | OS | Ubuntu 24.04.4 LTS |
 | Kernel | `6.8.0-106-generic` |
-| Kubernetes | k3s `v1.30.14`, single control-plane node |
+| Kubernetes | `v1.30.14`, single control-plane node |
 | Container runtime | containerd `2.2.2` |
 | CPU | 12 vCPU (AMD EPYC) |
 | Memory | 47 GiB |

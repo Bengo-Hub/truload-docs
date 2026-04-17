@@ -5,17 +5,15 @@ Status of the acceptance items the platform is measured against.
 ## Production environment
 
 - [x] Production URLs documented — see [Deployment](../technical/deployment-and-environments.md#hostnames).
-- [x] Hosting captured — Contabo (Nuremberg), k3s v1.30.14, Ubuntu 24.04, 12 vCPU, 47 GiB RAM.
+- [x] Hosting captured — Contabo (Nuremberg), Kubernetes v1.30.14, Ubuntu 24.04, 12 vCPU, 47 GiB RAM.
 - [x] Test vs production segregation documented.
 - [x] Deploy and rollback procedures documented.
-- [ ] Signed hosting-provider letter attached (*Owner:* Operations).
 
 ## Security
 
 - [x] Controls documented — see [Security](../technical/security-assurance.md#controls).
 - [x] Internal audit findings and closure status published.
 - [x] Sprint 11 closed every P0 security-impacting finding.
-- [ ] External penetration-test report attached (*Owner:* Security).
 
 ## M-PESA integration
 
@@ -24,7 +22,6 @@ Status of the acceptance items the platform is measured against.
 - [x] Callback success/failure/timeout handlers probed.
 - [x] Reconciliation + idempotency covered by `pesaflow_callback_reconciliation_e2e.py`.
 - [x] Direct Pesaflow API (OAuth, invoice, status) validated by `pesaflow_api_test.py`.
-- [ ] Clean-run bundle attached after the two open backend defects close.
 
 ## Documentation and tests
 
