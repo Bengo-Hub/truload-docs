@@ -37,7 +37,7 @@ jobs:
           python - <<'PY'
           import os, sys, yaml
           with open("mkdocs.yml") as f:
-              cfg = yaml.safe_load(f)
+              cfg = yaml.load(f, Loader=yaml.FullLoader)
           missing = []
           def walk(items):
               for i in items:
@@ -67,7 +67,7 @@ jobs:
   build-image:
     name: Build and push docs image
     needs: validate
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.vars.outputs.sha_short }}
@@ -108,7 +108,7 @@ jobs:
   bump-gitops:
     name: Bump image tag in devops-k8s
     needs: build-image
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout devops-k8s
