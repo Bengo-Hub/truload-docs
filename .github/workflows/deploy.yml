@@ -36,8 +36,13 @@ jobs:
         run: |
           python - <<'PY'
           import os, sys, yaml
+          # Allow !!python/name: tags used by pymdownx without importing modules
+          yaml.SafeLoader.add_multi_constructor(
+              "tag:yaml.org,2002:python/",
+              lambda loader, suffix, node: None,
+          )
           with open("mkdocs.yml") as f:
-              cfg = yaml.load(f, Loader=yaml.FullLoader)
+              cfg = yaml.safe_load(f)
           missing = []
           def walk(items):
               for i in items:
