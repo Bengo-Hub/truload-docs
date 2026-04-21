@@ -8,49 +8,91 @@ Weight tickets are the official record of each weighing transaction. In commerci
 |------|---------------|----------|
 | **Interim ticket** | After the first pass of a two-pass transaction | Gross or tare weight only; marked as "INTERIM" |
 | **Final ticket** | After both passes are complete (or single-pass with stored tare) | Gross, tare, net weight, deductions, and final billable weight |
-| **Void ticket** | When a transaction is cancelled | Original values with "VOID" watermark and void reason |
 
-## Ticket Fields
+## Ticket Sections
 
-### Header
+### Weight Summary
+
+The weight summary is the primary block on every commercial ticket:
 
 | Field | Description |
 |-------|-------------|
-| Ticket number | Unique sequential reference (format: `WTK-YYYYMMDD-NNNNN`) |
+| **Tare weight** | Weight of the empty vehicle (kg) |
+| **Tare source** | `Measured`, `Stored`, or `Preset` |
+| **Gross weight** | Weight of vehicle + cargo (kg) |
+| **Net weight** | Gross minus tare (kg) |
+| **Quality deduction** | Weight deducted for moisture, foreign matter, or grade (kg) — if applicable |
+| **Adjusted net weight** | Net weight minus quality deduction — the billable weight (kg) |
+
+### Ticket Status
+
+Shows the transaction status badge:
+
+| Status | Meaning |
+|--------|---------|
+| **Pending** | First pass captured; awaiting second pass |
+| **FirstWeightCaptured** | Synonym for Pending in the API |
+| **Complete** | Both passes done; final ticket available |
+| **ToleranceExceeded** | Weight variance beyond configured tolerance — supervisor approval required |
+
+A tolerance-exceeded transaction displays a warning until a supervisor approves the exception.
+
+### Vehicle Details
+
+| Field | Description |
+|-------|-------------|
+| Vehicle registration | Plate number |
+| Vehicle make | Manufacturer / model |
+| Trailer registration | Trailer plate (if applicable) |
+| Weighing type | `Multideck` or `Mobile` |
+
+### Consignment & Cargo
+
+| Field | Description |
+|-------|-------------|
+| Consignment number | Reference number for the load |
+| Order reference | Customer purchase order or delivery order number |
+| Cargo type | Commodity description (e.g., Maize, Cement) |
+| Seal numbers | Container or trailer seal numbers |
+| Expected net weight | Declared load weight (kg) — used to compute discrepancy |
+| Weight discrepancy | Difference between expected and actual net weight (kg) |
+| Tolerance | Configured tolerance applied to this transaction |
+
+### Parties & Route
+
+| Field | Description |
+|-------|-------------|
+| Transporter | Registered hauling company |
+| Driver | Driver name |
+| Origin | Cargo source location |
+| Destination | Delivery destination |
+| Remarks | Free-text notes added by the operator |
+
+### Weighing Passes
+
+| Field | Description |
+|-------|-------------|
+| 1st pass weight | Weight captured on the first pass (kg), with timestamp |
+| 1st pass type | `Gross` or `Tare` — identifies what was weighed first |
+| 2nd pass weight | Weight captured on the second pass (kg), with timestamp |
+| 2nd pass type | The complementary weight type |
+
+### Billing
+
+Shown when a weighing fee is configured for the organisation:
+
+| Field | Description |
+|-------|-------------|
+| Weighing fee | Per-transaction charge in the configured currency (KES or USD) |
+
+### Station & Officer
+
+| Field | Description |
+|-------|-------------|
 | Station | Weighbridge station name and code |
-| Date/time | Timestamp of ticket generation |
-| Operator | Name of the operator who completed the transaction |
-
-### Vehicle & Cargo
-
-| Field | Description |
-|-------|-------------|
-| Registration | Vehicle plate number |
-| Transporter | Registered transporter/company name |
-| Driver | Driver name and ID number |
-| Cargo type | Commodity being weighed |
-| Origin | Where the cargo is coming from |
-| Destination | Where the cargo is going |
-
-### Weights
-
-| Field | Description |
-|-------|-------------|
-| Gross weight | Weight of vehicle + cargo (kg) |
-| Tare weight | Weight of empty vehicle (kg) |
-| Net weight | Gross minus tare (kg) |
-| Tare source | `Measured`, `Stored`, or `Preset` |
-
-### Quality Deductions (if applicable)
-
-| Field | Description |
-|-------|-------------|
-| Moisture % | Measured moisture content |
-| Moisture deduction | Weight deducted for excess moisture (kg) |
-| Foreign matter % | Measured foreign matter content |
-| Foreign matter deduction | Weight deducted for foreign matter (kg) |
-| Grade adjustment | Weight adjustment for quality grade |
-| **Billable weight** | Net weight minus all deductions (kg) |
+| Weighed by | Name of the operator who captured the transaction |
+| Weighed at | Timestamp of the final weight capture |
+| Capture source | `TruConnect` (live scale) or `Manual` |
 
 ## Enforcement vs. Commercial Ticket Comparison
 
@@ -61,50 +103,49 @@ Weight tickets are the official record of each weighing transaction. In commerci
 | **Case reference** | Yes (linked to case register) | No |
 | **Tare source** | Always measured on-site | Measured, stored, or preset |
 | **Quality deductions** | Not applicable | Optional per cargo type |
-| **Billable weight** | Not applicable | Yes |
+| **Billable weight** | Not applicable | Yes (adjusted net) |
 | **Legal watermark** | Government agency seal | Company branding |
 
 ## Printing
 
-### Thermal printer
+### PDF (A4)
 
-TruLoad generates tickets formatted for standard 80mm thermal receipt printers. The ticket is auto-sent to the configured printer when the operator clicks **Print Ticket**.
-
-### A4 / PDF
-
-For formal documentation, click **Print (A4)** to generate a full-page PDF with:
+Click **Print Ticket** in the ticket detail drawer to generate a full-page PDF with:
 
 - Company logo and branding
-- Full transaction details
-- QR code linking to the digital ticket
-- Signature lines for operator and driver
+- Weight summary hero (tare / gross / net)
+- All consignment and cargo details
+- Operator and driver signature lines
 
-### Batch printing
+An interim PDF is available after the first pass for use as a delivery receipt. The final PDF is generated after the second pass.
 
-Supervisors can select multiple completed transactions from the ticket list and click **Print Selected** to generate a batch PDF.
+### Thermal printer
+
+TruLoad generates tickets formatted for standard 80mm thermal receipt printers. The ticket is auto-sent to the configured printer when the operator clicks **Print Ticket** on the weighing screen.
+
+## Searching and Filtering Tickets
+
+The ticket list supports filtering by:
+
+| Filter | Options |
+|--------|---------|
+| Date range | From / to date |
+| Time range | From / to time (within the date range) |
+| Status | All / Pending / First Weight Done / Complete / Tolerance Exceeded |
+| Station | All stations or a specific station |
+| Vehicle registration | Partial match |
+| Ticket number | Exact or partial match |
+
+Use the **Export** button to download filtered results as CSV for reconciliation or reporting.
 
 ## Ticket Lifecycle
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Interim: First pass captured
-    Interim --> Final: Second pass captured
-    Interim --> Voided: Transaction cancelled
-    Final --> Adjusted: Supervisor correction
-    Final --> [*]
-    Adjusted --> [*]
-    Voided --> [*]
+    [*] --> Pending: Transaction initiated
+    Pending --> FirstWeightCaptured: First pass captured
+    FirstWeightCaptured --> Complete: Second pass captured
+    FirstWeightCaptured --> ToleranceExceeded: Weight variance exceeds tolerance
+    ToleranceExceeded --> Complete: Supervisor approves exception
+    Complete --> [*]
 ```
-
-## Searching and Filtering Tickets
-
-The ticket list view supports filtering by:
-
-- Date range
-- Vehicle registration
-- Transporter
-- Cargo type
-- Ticket status (interim, final, voided, adjusted)
-- Operator
-
-Use the **Export** button to download filtered results as CSV for reconciliation or reporting.

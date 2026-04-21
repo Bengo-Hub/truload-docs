@@ -14,7 +14,7 @@ Before you begin, ensure you have:
 
 ### 1. Create or configure your tenant
 
-Your TruLoad tenant is provisioned by the platform administrator. Once created, you receive:
+Your TruLoad tenant is provisioned by the platform administrator with the **Commercial Weighing** module enabled. Once created, you receive:
 
 - A tenant slug (used in URLs and API calls)
 - An admin user account
@@ -37,49 +37,64 @@ Your TruLoad tenant is provisioned by the platform administrator. Once created, 
 | Role | Access |
 |------|--------|
 | **Operator** | Weighing capture, ticket printing |
-| **Supervisor** | Weighing review, tare approval, reports |
+| **Supervisor** | Weighing review, tolerance approval, tare management, reports |
 | **Finance** | Invoice management, payment reconciliation |
-| **Admin** | Full access including station and user setup |
-
-3. Create shift rotations and assign users to shifts.
+| **Admin** | Full access including station setup, commercial settings, and user management |
 
 ### 4. Configure TruConnect
 
-Install and configure [TruConnect](../technical/truconnect-install.md) on each workstation connected to a scale. Verify the live weight feed appears in the weighing screen.
+Install and configure [TruConnect](../technical/truconnect-install.md) on each workstation connected to a scale. Verify the live weight feed appears in the weighing screen before proceeding.
 
 ## Module Configuration
 
-### Enable commercial weighing features
+### Commercial settings
 
-Navigate to **Setup > System Config** and configure:
+Navigate to **Setup > Settings > Commercial** and configure:
 
-- **Weighing mode**: Set to `Commercial` (disables enforcement-specific fields like violation codes)
-- **Two-pass default**: Choose whether new transactions default to inbound-first or outbound-first
-- **Tare expiry**: Set the number of days before a stored tare weight must be re-verified
-- **Quality deductions**: Enable if your operation applies moisture, foreign-matter, or grade deductions
+| Setting | What to set |
+|---------|-------------|
+| **Weighing fee (KES)** | Per-transaction fee if applicable |
+| **Default tare expiry (days)** | How long stored tare weights remain valid (default: 90 days) |
+
+### Tolerance settings
+
+Navigate to **Setup > Tolerances** and define acceptable weight variances. Transactions that exceed a tolerance are flagged and require supervisor approval before the ticket is finalised. See [Setup & Configuration](setup.md#tolerance-settings) for field details.
 
 ### Configure cargo types
 
-Navigate to **Setup > Cargo Types** and define the commodities your site handles:
+Navigate to **Setup > Weighing Metadata > Cargo Types** and define the commodities your site handles:
 
-- Name and code
-- Default tolerance (percentage or absolute weight)
-- Quality parameters (if deductions are enabled)
-- Associated origin/destination pairs
+- Name and code (e.g., Maize / MZ)
+- Default tolerance percentage or absolute weight
+- Quality parameters (moisture target, foreign matter limit) if deductions are enabled
+
+### Configure origins and destinations
+
+Navigate to **Setup > Weighing Metadata > Origins/Dest.** and add the locations your vehicles travel between. These appear on weight tickets and enable route-based reporting.
+
+### Register drivers and transporters
+
+Navigate to **Setup > Weighing Metadata**:
+
+- **Transporters** — register haulage companies. Enter the portal email address to invite them to the [transporter portal](../portal/index.md).
+- **Drivers** — add driver names and licence numbers for fast lookup during capture.
+- **Vehicles** — pre-register vehicle plates with known tare weights to enable stored-tare single-pass operations.
 
 ## First-Time Checklist
 
 Use this checklist to confirm your site is ready for production weighing:
 
 - [ ] Tenant created and accessible at your assigned URL
+- [ ] Commercial weighing module confirmed active (weighing screen shows commercial stepper, not enforcement forms)
 - [ ] At least one station configured with correct operating hours
+- [ ] Weighing fee and tare expiry set under **Setup > Settings > Commercial**
 - [ ] Users created with appropriate roles
-- [ ] Shift schedule published for the current period
 - [ ] TruConnect installed, configured, and streaming live weights
-- [ ] At least one cargo type configured
-- [ ] Tolerances and quality deduction rules set (if applicable)
-- [ ] Test weighing completed end-to-end (capture, ticket, report)
-- [ ] Transporter portal invitations sent (if applicable)
+- [ ] At least one cargo type configured under **Setup > Weighing Metadata > Cargo Types**
+- [ ] Tolerance settings configured under **Setup > Tolerances**
+- [ ] Key transporters and drivers registered under **Setup > Weighing Metadata**
+- [ ] Test weighing completed end-to-end (capture → first weight → second weight → ticket printed)
+- [ ] Transporter portal invitations sent to relevant haulers (if applicable)
 
 ## Next Steps
 
@@ -88,3 +103,4 @@ Once your site is configured, proceed to:
 - [Two-Pass Weighing](two-pass-weighing.md) to learn the core weighing workflow
 - [Tare Management](tare-management.md) to set up stored vehicle tare weights
 - [Setup & Configuration](setup.md) for advanced configuration options
+- [Reports](reports.md) for available reports and access by role
