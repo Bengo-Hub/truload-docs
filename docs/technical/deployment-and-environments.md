@@ -46,7 +46,7 @@ Persistent volumes (local-path storage class):
 
 Shared infrastructure in the `infra` namespace:
 
-- PostgreSQL 16 (`postgresql-0`, 20 GiB data PVC)
+- PostgreSQL 17 (`postgresql-0`, 20 GiB data PVC)
 - Redis (`redis-master-0`, 8 GiB data PVC)
 - RabbitMQ (2-node cluster, 10 GiB data PVC per node)
 - Prometheus + Grafana for monitoring

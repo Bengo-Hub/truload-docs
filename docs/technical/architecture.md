@@ -88,7 +88,7 @@ Pluggable adapter model:
 
 ## Data stores
 
-- **PostgreSQL 16** with `pgvector` — transactional data and semantic
+- **PostgreSQL 17** with `pgvector` — transactional data and semantic
   search on prior violations.
 - **Redis** — session cache, permission cache, background-job progress.
 - **RabbitMQ** (2 nodes) — async jobs, document generation, notifications.
