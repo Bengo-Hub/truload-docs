@@ -86,3 +86,17 @@ and always leaves an audit trail on the underlying case.
    by the release conditions.
 
 ![Special release page](../media/special-release/special-release-page.png)
+
+### Special release approval queue
+
+The Special Releases page shows only **pending** items (not yet approved or rejected). Supervisors can filter the queue before acting:
+
+| Filter | Description |
+|---|---|
+| Case No | Partial match on the case reference number |
+| Release type | Category of the release reason |
+| Date from / to | Narrow by when the release was requested |
+
+**Approve / Reject buttons** are visible only on pending records. Records that are already approved or rejected display a status badge only; no action buttons are shown.
+
+> Tolerance-based releases generated automatically by the weighing engine are created pre-approved and do not appear in the pending queue.

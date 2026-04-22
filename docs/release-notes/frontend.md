@@ -4,6 +4,40 @@ Source: `truload-frontend` — continuous-release model; each merge to `main` is
 
 ---
 
+## v1.2.0 — 2026-04-22
+
+### Enforcement UX Fixes
+
+**Special releases page**
+
+- Search bar added: filter by case number, release type, and date range (from/to)
+- Pagination controls added — results paged server-side
+- Status badges: `Pending` (yellow), `Approved` (green), `Rejected` (red) shown on each row
+- Approve and Reject action buttons are only rendered for records that are still pending (`!isApproved && !isRejected`); resolved records show status badge only
+- Error messages from 409 / validation responses parsed from the API body and surfaced via toast
+
+**Case register — vehicle reg search**
+
+- Dedicated `Vehicle Reg` search field added alongside the existing general search
+- Queries the backend with space-normalized matching: `KCX091X` matches `KCX 091X` and vice versa
+
+**Sidebar — commercial-only module gating**
+
+- `Tare Register`, `Tolerance Settings`, and `Billing` sidebar items now carry a `commercialOnly` flag
+- Items with this flag are hidden for enforcement tenants; no config change required — derived from `isCommercial` org flag
+
+**Setup → Weighing Metadata — Vehicles tab**
+
+- Fleet list now loads immediately on tab open
+- Previously required the user to type at least 2 characters before any results appeared; `enabled: query.length >= 2` guard removed
+
+**Setup → Weighing Metadata — Vehicle Makes**
+
+- Attempting to add a make that was previously soft-deleted (e.g. HOWO, MAZDA, TOYOTA) now silently restores it and returns the record — no error shown
+- If a genuinely duplicate (active) make is submitted, a clear conflict message is displayed: `"A vehicle make with this code already exists. Use a different code."`
+
+---
+
 ## v1.1.0 — 2026-04-21
 
 ### Commercial Mode UI Polish

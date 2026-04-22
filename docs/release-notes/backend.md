@@ -4,6 +4,45 @@ Source: `truload-backend` — continuous-release model; each merge to `main` is 
 
 ---
 
+## v1.2.0 — 2026-04-22
+
+### Enforcement Fixes and Charge Accuracy
+
+**Driver + owner joint-liability charge split (Cap 403 / EAC VLC)**
+
+Under the Kenya Traffic Act Cap 403 and the EAC Vehicle Load Control Act, the registered owner and the driver are jointly and severally liable for overload penalties. The fee schedule gives the *per-party* amount; the billed total must therefore be doubled.
+
+- `ProsecutionService.CalculateChargesAsync`: total fee is now `perPartyFee × 2`
+- `ChargeCalculationResult` gains `PerPartyFeeKes` and `PerPartyFeeUsd` so ticket PDFs and downstream systems can show the split
+- `ProsecutionCaseDto` gains the same two fields (derived as `TotalFee / 2` from stored data — no migration required)
+- Repeat-offender handling is unchanged: conviction number 2 selects a higher fee band from the schedule; no blanket multiplier is applied on top
+
+**Special releases — pending filter, search, and pagination**
+
+The special-release approval queue previously returned all records (including already-approved and rejected releases), causing supervisors to see closed items in the pending list.
+
+- `SpecialReleaseRepository.GetPendingApprovalsAsync`: filter changed to `!IsApproved && !IsRejected`
+- Search params added: `caseNo`, `releaseType`, `from`, `to`
+- Response shape changed from `IEnumerable<SpecialRelease>` to `(List<SpecialRelease> Items, int TotalCount)` for pagination
+- `ISpecialReleaseService.GetPendingApprovalsAsync` returns `PagedResponse<SpecialReleaseDto>`
+
+**Vehicle registration search — space normalization**
+
+Kenyan plates are issued both with and without an internal space (e.g. `KCX091X` and `KCX 091X` are the same physical plate). All search paths now normalize spaces before comparing.
+
+- `VehicleRepository.GetByRegNoAsync`: strips spaces before equality check using PostgreSQL `REPLACE()`
+- `VehicleRepository.SearchAsync`: ILike + REPLACE on `RegNo`, `ChassisNo`, `EngineNo`
+- `CaseRegisterRepository.SearchAsync`: vehicle reg filter added with the same ILike + REPLACE pattern (was declared but never wired into the WHERE clause)
+
+**Vehicle makes — restore soft-deleted records on create**
+
+When a make is soft-deleted (e.g. HOWO, MAZDA, TOYOTA from a data-cleanup run), users cannot see it in the select dropdown and attempt to recreate it. Previously this hit a DB unique-index constraint and returned a confusing 409. Now:
+
+- `VehicleMakesRepository.GetByCodeIncludingDeletedAsync` added — queries without the `DeletedAt == null` filter
+- `VehicleMakesController.Create`: checks for a soft-deleted entry by code before attempting an insert; if found, clears `DeletedAt`, restores `IsActive`, updates name/country/description, and returns the restored record
+
+---
+
 ## v1.1.0 — 2026-04-21
 
 ### Commercial Weighing Polish

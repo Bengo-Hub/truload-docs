@@ -45,6 +45,21 @@
 ![Auto-weight config](../media/truconnect/auto-weight-config.png)
 ![Threshold config](../media/truconnect/thresh-old-config.png)
 
+## Weighing metadata — vehicle makes and fleet
+
+Vehicle makes (manufacturers) and the vehicle fleet are managed under **Setup → Weighing Metadata**.
+
+**Vehicle Makes tab**
+
+- The dropdown lists only active makes. If a make appears missing (e.g. HOWO, MAZDA, TOYOTA), it may have been soft-deleted during a data-cleanup run.
+- Attempting to add a make whose code already exists (even if previously deleted) will **restore** the existing record rather than creating a duplicate. The restored make becomes active immediately.
+- If you enter a code that conflicts with a currently active make, a conflict message is shown and no record is created.
+
+**Vehicles (Fleet) tab**
+
+- The vehicle list loads immediately when you open the tab — no search term required.
+- Type into the search box to filter by plate number, chassis number, or engine number. Plate searches are space-normalised: `KCX091X` and `KCX 091X` match the same vehicle.
+
 ## Post-setup validation checklist
 
 - Weighing module receives live scale values.
