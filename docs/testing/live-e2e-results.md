@@ -5,20 +5,21 @@
 - Backend: [kuraweighapitest.masterspace.co.ke](https://kuraweighapitest.masterspace.co.ke)
 - Frontend: [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke)
 
-## Latest run — 2026-04-14
+## Latest run — 2026-05-05
 
 | Suite | Outcome | Evidence |
 |---|---|---|
-| Compliance (14 steps) | 12 of 19 steps verified | `TEST_RESULTS.md` |
+| Compliance (19 steps) | All 19 steps verified | `TEST_RESULTS.md` |
 | Pesaflow invoice | Invoice push verified | `pesaflow_invoice_e2e.md` |
 | Pesaflow callback / reconciliation | Pass | `pesaflow_callback_reconciliation_e2e.md` |
 | Pesaflow direct API | Pass | `pesaflow_api_test.md` |
 
 Summary:
 
-- Authentication is fully tested across all suites.
+- Authentication fully tested across all suites.
+- All 19 compliance steps verified end-to-end including yard release, reweigh, and auto-close cascade.
 - Callback, reconciliation, and direct Pesaflow API probes pass end to end.
-- Remaining compliance steps and invoice status polling are under active verification.
+- Invoice status polling fallback (background worker retry) verified.
 
 ## Screenshots from the run
 

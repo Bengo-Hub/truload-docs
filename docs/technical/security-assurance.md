@@ -51,10 +51,10 @@ The most recent internal audit is documented in
 | Axle-group aggregation (data integrity) | P0 | Resolved |
 | Per-axle-type fee calculation (financial correctness) | P0 | Resolved |
 | Demerit-points tracking (audit completeness) | P0 | Resolved |
-| Dual-table weight-ticket format (evidentiary) | P1 | In progress |
-| Case subfile A-J completeness (evidentiary) | P1 | In progress |
-| NGINX + per-principal API rate limiting | P2 | Deployed; tuning in progress |
-| External penetration test | -- | Scheduled, report pending |
+| Dual-table weight-ticket format (evidentiary) | P1 | Resolved — QuestPDF template (KeNHA Form WB-001) live |
+| Case subfile A-J completeness (evidentiary) | P1 | Resolved — subfile A–J workflow deployed |
+| NGINX + per-principal API rate limiting | P2 | Resolved — rate limits deployed and verified |
+| External penetration test | -- | Scheduled — pending engagement with external vendor |
 
 ## Verification checklist
 

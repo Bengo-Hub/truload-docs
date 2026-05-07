@@ -1,5 +1,13 @@
 # Existing Test Reports
 
+## eCitizen Production Readiness Report
+
+The full production readiness report — covering infrastructure, security, M-PESA integration validation, and test evidence — is available for download:
+
+[Download PDF Report](../reports/TruLoad-eCitizen-Production-Readiness-Report.pdf){ .md-button .md-button--primary }
+
+
+
 ## Suites on disk
 
 ### Backend — `truload-backend/`
