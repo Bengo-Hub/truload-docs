@@ -37,6 +37,7 @@ flowchart TD
     When a stored tare has expired, the system **blocks single-pass mode** for that vehicle and requires a fresh tare capture.
 
 - **Expiry period**: Configured in **Setup > System Config > Tare Validity (days)**
+- **Stale transaction threshold**: Separate from tare expiry — if first-weight-only transactions remain open past the configured hours (default 8 h), station managers receive an email alert. Configure in **Setup > System Config > Commercial Pending Weighing Threshold (hours)**.
 - **Grace period**: Optionally allow a configurable number of days past expiry before hard-blocking
 - **Re-verification**: Any new tare capture automatically extends the expiry date
 

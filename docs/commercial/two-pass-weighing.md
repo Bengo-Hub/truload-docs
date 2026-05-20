@@ -102,6 +102,22 @@ flowchart LR
 | `Voided` | Transaction cancelled before completion |
 | `Adjusted` | Supervisor applied a manual correction |
 
+## Resume Flow (Returning Vehicle)
+
+When an operator enters a vehicle registration number on the **Capture** screen:
+
+1. TruLoad checks for any open (first-weight-only) transactions for that plate within the configured threshold (default **8 hours**).
+2. If an open transaction is found, a **Resume Weighing** dialog appears showing the ticket number, first weight, and elapsed time.
+3. The operator can:
+    - **Resume** — the stepper jumps directly to the **Second Weight** step with the existing transaction pre-loaded.
+    - **Start New** — dismisses the dialog and creates a fresh transaction (the old open transaction remains open; a supervisor may need to void it).
+
+The resume dialog shows the most recent open transaction if multiple exist.
+
+### Stale Transaction Notifications
+
+If a first-weight-only transaction remains open past the threshold (default 8 hours) without a second weight being captured, TruLoad automatically emails the **Commercial Weighing Manager** and **Station Manager** assigned to that organisation. Notifications are sent once per transaction (tracked by the `StaleAlertSentAt` field). The threshold can be configured in **Setup > System Config > Commercial Pending Weighing Threshold (hours)**.
+
 ## Handling Exceptions
 
 ### Vehicle leaves without second pass
@@ -109,7 +125,7 @@ flowchart LR
 Pending transactions remain open. A supervisor can:
 
 - Void the transaction with a documented reason
-- Extend the pending period if the vehicle is expected to return
+- Allow the vehicle to return within the configured threshold — the Resume dialog will appear automatically when the plate is re-entered
 
 ### Weight discrepancy
 

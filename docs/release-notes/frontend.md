@@ -4,6 +4,37 @@ Source: `truload-frontend` — continuous-release model; each merge to `main` is
 
 ---
 
+## v1.3.0 — 2026-05-20
+
+### Commercial Weighing Resume Flow, UI Cleanup, and Billing Fixes
+
+**Two-pass resume dialog**
+
+- `CommercialWeighingStepper` now queries `GET /commercial-weighing/pending-by-plate/{regNo}` as the operator types a plate on the Capture step
+- `ResumeWeighingDialog` component created — shows ticket number, first weight (kg + type), station, and elapsed time
+- Operator can Resume (jumps to Second Weight step with transaction pre-loaded) or Start New (dismisses dialog)
+- `getPendingCommercialByPlate` added to `src/lib/api/weighing.ts`
+
+**Subscription gate handling**
+
+- `handleProceedToFirstWeight` catches HTTP 402 responses from the backend and redirects the operator to `/{orgSlug}/billing` with an explanatory toast
+
+**Setup > Notifications — channel settings deduplication**
+
+- Removed `ChannelSettingsTab` (platform-owner-only tab that duplicated the Workflows tab). Final tabs: Email, Workflows, Reports, Push
+
+**Setup > Integrations — Channels tab removed**
+
+- Removed the Channels tab (Twilio SMS, Africa's Talking, SMTP Email providers); these are managed by notifications-service
+- TabsList reduced from 3 to 2 columns (Payments, APIs)
+
+**Billing page fixes**
+
+- `ProtectedRoute` changed from `requiredPermissions={['invoice.read']}` to `moduleKey="billing"` — commercial managers with billing module access no longer hit a permission gate
+- All billing queries now use `retry: false` to fail cleanly when subscriptions-api is unavailable instead of retrying
+
+---
+
 ## v1.2.0 — 2026-04-22
 
 ### Enforcement UX Fixes

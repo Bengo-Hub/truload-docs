@@ -4,6 +4,55 @@ Source: `truload-backend` — continuous-release model; each merge to `main` is 
 
 ---
 
+## v1.3.0 — 2026-05-20
+
+### Commercial Weighing Workflows, Subscriptions, and Cleanup
+
+**Two-pass resume flow — pending-by-plate endpoint**
+
+- `GET /api/v1/commercial-weighing/pending-by-plate/{regNo}` — returns open first-weight-only transactions for a vehicle within the configured threshold (default 8 h)
+- `CommercialWeighingService.GetPendingByPlateAsync` added; respects tenant isolation and configurable hour threshold
+
+**Stale transaction notifications**
+
+- New Hangfire recurring job `StaleWeighingNotificationJob` runs every 30 minutes
+- Finds commercial transactions stuck at `first_weight_captured` past the threshold and emails Commercial Weighing Managers and Station Managers
+- Deduplication via `StaleAlertSentAt` column — one alert per transaction
+- Migration `20260520174750_AddStaleAlertSentAtToWeighingTransaction` applied
+
+**Configurable pending threshold setting**
+
+- New system setting `commercial.pending_weighing_threshold_hours` (default 8) seeded in `SystemConfigurationSeeder`
+- Constant `SettingKeys.CommercialPendingWeighingThresholdHours` added to `ApplicationSettings`
+
+**Completion notifications**
+
+- `CommercialWeighingService` now sends `truload/weight_ticket` email to the transporter on second-weight completion or stored-tare use
+- Tolerance exception alerts (`truload/tolerance_exception_alert`) sent to station managers when net weight discrepancy exceeds configured tolerance band
+
+**Subscription validation**
+
+- `CommercialWeighingController.Initiate` checks subscription status before creating a transaction
+- Returns HTTP 402 `{ code: "subscription_inactive" }` if the org's subscription is not ACTIVE or TRIAL
+- Fail-open: if subscriptions-api is unreachable, the weighing proceeds
+
+**Treasury pay portal URL from config**
+
+- `Treasury:PayPortalBaseUrl` added to `appsettings.json` (default `https://books.codevertexitsolutions.com/pay`)
+- Both `CommercialWeighingService` and `InvoiceService` now read this from `IConfiguration`; hardcoded URL removed
+
+**Module visibility fixes**
+
+- `TenantModules.SetupNotifications = "setup_notifications"` constant added
+- `DefaultCommercialWeighingModules` now includes `setup_notifications` so commercial tenants see the Notifications setup page
+- TRULOAD-DEMO org `EnabledModulesJson` updated to include `setup_notifications` and `billing`
+
+**Notifications and Integrations page cleanup**
+
+- `IntegrationConfigController` returns HTTP 400 for notification-managed providers (`sms_twilio`, `sms_africastalking`, `email_smtp`) — these are managed by notifications-service
+
+---
+
 ## v1.2.0 — 2026-04-22
 
 ### Enforcement Fixes and Charge Accuracy
