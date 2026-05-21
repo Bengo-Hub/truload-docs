@@ -82,15 +82,27 @@ nav:
       - Registration: portal/registration.md
       - Weighing History: portal/weighing-history.md
       - Subscriptions: portal/subscriptions.md
+      - Team Management: portal/team.md
+      - Invite Acceptance: portal/invite.md
+  - Billing & Plans:
+      - Platform Billing: billing/index.md
   - Operations:
       - technical/index.md
       - Architecture: technical/architecture.md
+      - Multi-Tenancy: technical/MULTI_TENANCY.md
+      - Background Jobs: technical/BACKGROUND_JOBS.md
+      - Compliance Engine: technical/COMPLIANCE_ENGINE.md
+      - Performance Tuning: technical/performance-tuning.md
       - Deployment: technical/deployment-and-environments.md
       - Security: technical/security-assurance.md
       - Integrations (M-PESA): technical/integrations-mpesa.md
       - Backup, DR & Troubleshooting: technical/backup-dr-troubleshooting.md
       - TruConnect Install: technical/truconnect-install.md
       - Troubleshooting: technical/troubleshooting.md
+  - Runbooks:
+      - Procedures: operations/PROCEDURES.md
+      - Secret Rotation: operations/SECRET_ROTATION.md
+      - Monitoring: operations/MONITORING.md
   - API Reference:
       - Swagger: technical/api/swagger.md
       - OpenAPI: technical/api/openapi.md
