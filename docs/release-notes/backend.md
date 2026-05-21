@@ -4,6 +4,28 @@ Source: `truload-backend` — continuous-release model; each merge to `main` is 
 
 ---
 
+## v1.3.1 — 2026-05-21
+
+### Tolerance Precedence Fix and Standard Config Updates
+
+**Axle config tolerance now correctly takes precedence over global tolerance**
+
+- `CalculateGroupToleranceAsync`: config-specific `ToleranceKg`/`TolerancePercentage` is now evaluated first (was priority #3, now priority #1), ensuring per-config overrides always win over Act-level global tolerance
+- Weight tickets now display `Axle tolerance: X,XXX kg (config)` when a per-config override is active (was always showing `0% (strict)`)
+
+**Standard axle config tolerance updates no longer blocked**
+
+- `UpdateStandardConfigAsync` added to `AxleConfigurationRepository` — standard configurations can now have their `ToleranceKg` and notes updated via `PUT /api/v1/AxleConfiguration/{id}` without returning 400
+- Previously all standard-config updates returned `400 Cannot modify standard EAC configurations`
+
+**Tenant database auto-migration on startup**
+
+- Backend now applies EF Core migrations and seeds all dedicated tenant databases (e.g. kuraweigh) automatically on startup — no manual migration job required
+- `TenantConnectionStringProvider.GetDedicatedTenantDatabases()` added
+- `Database:DirectHost` config controls PgBouncer bypass for migration advisory locks
+
+---
+
 ## v1.3.0 — 2026-05-20
 
 ### Commercial Weighing Workflows, Subscriptions, and Cleanup

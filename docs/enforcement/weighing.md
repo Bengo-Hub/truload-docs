@@ -68,6 +68,40 @@ This section covers complete weighing operations from vehicle entry to decision 
 
 ![Weight ticket](../media/weighing/weight-ticket.png)
 
+## Tolerance logic and precedence
+
+The weighing engine applies regulatory tolerances in the following priority order. A higher-priority rule always overrides lower-priority ones.
+
+| Priority | Source | When it applies |
+|---|---|---|
+| 1 (highest) | **Config-specific tolerance** | `ToleranceKg` or `TolerancePercentage` is set on the axle configuration linked to the transaction. Overrides all global settings. |
+| 2 | **Act-specific global tolerance** | Tolerance seeded per legal framework (e.g. Traffic Act GVW tolerance = 2,000 kg; EAC axle group = 5%). Applies when no per-config override is set. |
+| 3 | **Standard law tolerance** | Fallback by axle type: single axles use `STANDARD_LAW_SINGLE`, grouped axles (tandem/tridem/quad) use `STANDARD_LAW_GROUP`. |
+| 4 (lowest) | **Strict (0%)** | No tolerance configured at any level — overload is assessed at the permissible limit exactly. |
+
+### GVW tolerance
+Resolved separately from axle tolerance. Same priority order applies: config-specific `ToleranceKg` on the axle configuration wins over the Act-level `GVW` tolerance setting.
+
+### Operational allowance
+An additive 200 kg allowance is applied to individual axle measurements only (not to group or GVW). This is a sensor-accuracy buffer, not a regulatory tolerance — it does not appear in case charges.
+
+### Reading the weight ticket
+
+The ticket footer shows the effective tolerances used for the transaction:
+
+- `Regulatory Tolerance: 2,000 kg (config)` — a per-config GVW tolerance override is active
+- `Axle tolerance: 2,000 kg (config)` — a per-config axle tolerance override was used for group calculations
+- `Axle tolerance: 5% (EAC)` — the Act-level global tolerance applied (no config-specific override)
+- `Axle tolerance: 0% (strict)` — no tolerance was configured at any level
+
+### Setting config-specific tolerances
+
+Go to **Settings → Axle Configurations**, select a configuration and set `Tolerance (kg)`. This value applies to all enforcement transactions that reference that axle configuration, regardless of the global Act tolerance.
+
+Standard EAC configurations allow tolerance and notes updates only — structural fields (axle count, code, GVW) are locked. Derived configurations (created by your organisation) can be fully edited.
+
+---
+
 ## Special release
 
 Special release is the controlled path used when a vehicle cannot physically

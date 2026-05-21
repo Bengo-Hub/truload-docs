@@ -21,6 +21,17 @@ TruLoad's commercial weighing module serves private-sector operations where accu
 - **Transporter portal** -- external haulers view their own weighing history and download tickets
 - **Comprehensive reporting** -- daily summaries, tonnage by commodity, vehicle utilization, and more
 
+## Business Models
+
+TruLoad serves two distinct commercial weighing patterns:
+
+| Model | Description |
+|-------|-------------|
+| **Third-Party Weighbridge** | Public or commercial weighbridge charging transporters a per-transaction fee |
+| **Facility-Owned Scale** | Factory, quarry, or depot weighing their own trucks — no per-transaction fee |
+
+See [Business Models](business-models.md) to choose and configure the right model for your organisation.
+
 ## Quick Start
 
 <div class="grid cards" markdown>
@@ -28,6 +39,10 @@ TruLoad's commercial weighing module serves private-sector operations where accu
 - :material-rocket-launch: **[Getting Started](getting-started.md)**
 
     Tenant setup, module configuration, first-time checklist
+
+- :material-office-building: **[Business Models](business-models.md)**
+
+    Fee-based weighbridge vs. facility-owned scale
 
 - :material-scale-balance: **[Two-Pass Weighing](two-pass-weighing.md)**
 

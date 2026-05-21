@@ -138,14 +138,52 @@ The ticket list supports filtering by:
 
 Use the **Export** button to download filtered results as CSV for reconciliation or reporting.
 
+## Field Population and N/A Values
+
+Some fields on the weight ticket will show **N/A** or be blank if they were not captured during the transaction. The table below explains when each optional field is populated.
+
+| Field | Populated when |
+|-------|---------------|
+| Trailer registration | Operator enters it in the Ticket step |
+| Transporter / Driver | Registered in Weighing Metadata and selected during Capture step |
+| Cargo type | Selected during Capture step |
+| Consignment number | Entered in Ticket step |
+| Order reference | Entered in Ticket step |
+| Seal numbers | Entered in Ticket step |
+| Origin / Destination | Selected during Capture step |
+| Expected net weight | Entered in Ticket step — required for discrepancy/tolerance check |
+| Weight discrepancy | Only shown if Expected Net Weight was entered |
+| Quality deduction | Only shown if a deduction was applied in Ticket step |
+| Adjusted net weight | Only shown if Quality Deduction > 0 |
+| Deck/axle weights | Only shown for Multideck scale transactions where per-deck weights were captured |
+| Billing section | Only shown for third-party weighbridge organisations with a fee configured |
+
+!!! tip "Reducing N/A fields"
+    Pre-register vehicles, transporters, and drivers in **Setup > Weighing Metadata** so they auto-populate during the Capture step. Require operators to fill all Ticket step fields before printing.
+
+## Weighing Scale Types
+
+The ticket adapts based on how the weight was captured:
+
+| Scale Type | Ticket behaviour |
+|------------|-----------------|
+| **Multideck** | Shows per-deck weight breakdown (Deck 1–4) if captured by TruConnect middleware |
+| **Mobile** | No per-deck section — mobile axle-by-axle scale data is not shown on the final ticket |
+| **Standard (static)** | Shows combined weight only |
+
+The scale type is set automatically based on which weighing page was used (`/weighing` for standard, `/weighing/multideck` for multideck, `/weighing/mobile` for mobile).
+
 ## Ticket Lifecycle
 
 ```mermaid
 stateDiagram-v2
     [*] --> Pending: Transaction initiated
     Pending --> FirstWeightCaptured: First pass captured
-    FirstWeightCaptured --> Complete: Second pass captured
-    FirstWeightCaptured --> ToleranceExceeded: Weight variance exceeds tolerance
-    ToleranceExceeded --> Complete: Supervisor approves exception
+    FirstWeightCaptured --> Complete: Second pass captured (net within tolerance)
+    FirstWeightCaptured --> ToleranceExceeded: Net discrepancy exceeds configured tolerance
+    ToleranceExceeded --> Complete: Supervisor approves tolerance exception
     Complete --> [*]
 ```
+
+!!! info "Tolerance check timing"
+    Tolerance is evaluated **after** the second weight is captured and net weight is calculated. The Expected Net Weight must be entered in the Ticket step; if it is not provided before the second weight is captured, tolerance is not evaluated for that transaction.

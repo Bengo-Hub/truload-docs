@@ -2,7 +2,7 @@
 
 **TruLoad** is a multi-tenant weighbridge platform that serves two distinct use cases from a single codebase: **axle-load enforcement** for government agencies and **commercial weighing** for private-sector operations.
 
-**Current version: v1.0.1**
+**Current version: v1.3.1**
 
 ---
 

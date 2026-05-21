@@ -8,28 +8,53 @@ Navigate to **Setup > Settings > Commercial** to configure organisation-wide com
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| **Weighing fee (KES)** | Per-transaction fee charged for commercial weighing | — |
+| **Weighing Business Model** | `Third-Party Weighbridge` (charges transporters per transaction) or `Facility-Owned Scale` (no per-transaction fee, internal use only) | — |
+| **Weighing fee (KES)** | Per-transaction fee charged for commercial weighing. Only applies when model is `Third-Party Weighbridge`. Leave at 0 for facility-owned scales. | — |
 | **Default tare expiry (days)** | Number of days a stored tare weight remains valid before re-verification is required | 90 |
 | **Payment gateway** | Integrated payment provider (read-only; configured by platform admin) | — |
+
+!!! info "Business model"
+    Set the **Weighing Business Model** before going live. When set to `Facility-Owned Scale`, the system skips invoice creation and payment collection for every transaction. See [Business Models](business-models.md) for a full comparison.
 
 !!! info "Tare expiry"
     When a stored tare expires, the system prevents single-pass operations on the affected vehicle and prompts the operator to capture a fresh tare weight. The tare expiry period can be overridden per vehicle in the tare register.
 
 ## Tolerance Settings
 
-Tolerances define the acceptable variance between expected and actual weights. They are configured per cargo type and apply to anomaly detection, not legal compliance (that is the enforcement module's domain).
+Tolerances define the acceptable variance between expected and actual net weight. They apply per cargo type and are business rules set by the site operator — not legal compliance limits (those belong to the enforcement module).
 
 Navigate to **Setup > Tolerances** to configure:
 
-| Setting | Description | Example |
-|---------|-------------|---------|
-| **Gross tolerance %** | Acceptable variance on gross weight for flagging | 2.0% |
-| **Tare drift threshold** | Maximum difference between stored and measured tare before flagging | 200 kg |
-| **Net weight tolerance** | Acceptable variance on net weight for the cargo type | 1.5% |
-| **Minimum capture weight** | Weights below this value are rejected as invalid | 500 kg |
+| Field | Description | Example |
+|-------|-------------|---------|
+| **Cargo type** | Apply this rule to a specific commodity, or leave blank for a global rule | Maize |
+| **Tolerance type** | `Percentage` or `Absolute (kg)` | Percentage |
+| **Tolerance value** | Numeric value (% or kg) | 2.0 |
+| **Maximum tolerance (kg)** | Cap applied when using percentage mode — the discrepancy will not be flagged as exceeded beyond this kg ceiling | 2,000 kg |
+| **Description** | Label for operators (e.g. "Maize moisture variance") | — |
+
+### How tolerance is evaluated
+
+1. Operator enters **Expected Net Weight** in the Ticket step.
+2. After both weights are captured and net is calculated, TruLoad compares the actual net weight against the expected.
+3. If the discrepancy exceeds the configured tolerance, the transaction is flagged **Tolerance Exceeded**.
+4. The ticket cannot be finalised until a supervisor with `weighing.override` permission approves the exception.
+
+```
+Discrepancy (kg) = |Actual Net Weight − Expected Net Weight|
+
+For percentage tolerance:  Threshold = ExpectedNetWeight × ToleranceValue / 100
+                            Cap applied: min(Threshold, MaxToleranceKg)
+For absolute tolerance:     Threshold = ToleranceValue (kg)
+
+Flag if: Discrepancy > Threshold
+```
+
+!!! warning "Expected net weight required"
+    Tolerance is only evaluated when the operator provides an **Expected Net Weight** in the Ticket step. If omitted, no tolerance check runs.
 
 !!! info "Tolerances vs. enforcement limits"
-    In enforcement mode, tolerances are defined by the Kenya Traffic Act and EAC regulations. In commercial mode, tolerances are business rules set by the site operator. Exceeding a tolerance generates a warning flag on the transaction, not a legal case. Flagged transactions require supervisor approval before the ticket is finalised.
+    In enforcement mode, axle-load limits are defined by the Kenya Traffic Act. In commercial mode, tolerances are business rules you configure. Exceeding a tolerance generates a supervisor approval gate on the transaction — not a legal case or prosecution record.
 
 ## Cargo Type Configuration
 

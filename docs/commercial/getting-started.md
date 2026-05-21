@@ -53,8 +53,11 @@ Navigate to **Setup > Settings > Commercial** and configure:
 
 | Setting | What to set |
 |---------|-------------|
-| **Weighing fee (KES)** | Per-transaction fee if applicable |
+| **Weighing Business Model** | `Third-Party Weighbridge` if you charge transporters per transaction; `Facility-Owned Scale` if you weigh your own fleet with no per-transaction fee |
+| **Weighing fee (KES)** | Per-transaction fee (only applies to Third-Party Weighbridge model) |
 | **Default tare expiry (days)** | How long stored tare weights remain valid (default: 90 days) |
+
+See [Business Models](business-models.md) for a full comparison of the two models.
 
 ### Tolerance settings
 
@@ -86,12 +89,13 @@ Use this checklist to confirm your site is ready for production weighing:
 
 - [ ] Tenant created and accessible at your assigned URL
 - [ ] Commercial weighing module confirmed active (weighing screen shows commercial stepper, not enforcement forms)
+- [ ] **Business model selected** under **Setup > Settings > Commercial** (`Third-Party Weighbridge` or `Facility-Owned Scale`)
 - [ ] At least one station configured with correct operating hours
-- [ ] Weighing fee and tare expiry set under **Setup > Settings > Commercial**
+- [ ] Weighing fee and tare expiry set under **Setup > Settings > Commercial** (fee required for Third-Party model only)
 - [ ] Users created with appropriate roles
 - [ ] TruConnect installed, configured, and streaming live weights
 - [ ] At least one cargo type configured under **Setup > Weighing Metadata > Cargo Types**
-- [ ] Tolerance settings configured under **Setup > Tolerances**
+- [ ] Tolerance settings configured under **Setup > Tolerances** (optional — only evaluates if operator provides expected net weight)
 - [ ] Key transporters and drivers registered under **Setup > Weighing Metadata**
 - [ ] Test weighing completed end-to-end (capture → first weight → second weight → ticket printed)
 - [ ] Transporter portal invitations sent to relevant haulers (if applicable)
