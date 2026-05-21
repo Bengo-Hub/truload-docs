@@ -1,15 +1,15 @@
 # Registration
 
-The Transporter Portal uses a self-service registration flow. No invitation from a weighbridge operator is required -- any transporter can sign up and start viewing their weighing history immediately.
+The Transporter Portal uses a self-service registration flow. To access weighing history, your company must already be registered as a transporter at one or more weighbridges using TruLoad. During portal registration you link your account to your transporter record by matching your registered email address, phone number, or transporter code.
 
 ## Registration Flow
 
 ```mermaid
 flowchart TD
     A[Visit portal URL] --> B[Click Register]
-    B --> C[Enter company details]
-    C --> D[Create admin account]
-    D --> E[Verify email]
+    B --> C[Create account with email and password]
+    C --> D[Verify email]
+    D --> E[Link to transporter record]
     E --> F[Add vehicles to fleet]
     F --> G[Select subscription plan]
     G --> H[Portal ready]
@@ -21,18 +21,8 @@ flowchart TD
 
 1. Navigate to the TruLoad Transporter Portal URL.
 2. Click **Register**.
-3. Enter your company details:
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| Company name | Yes | Legal name of the transport company |
-| Registration number | Yes | Business registration / KRA PIN |
-| Contact email | Yes | Primary contact for account communications |
-| Phone number | Yes | Mobile number (used for M-PESA billing) |
-| Physical address | No | Company address |
-
-4. Create your admin user account (name, email, password).
-5. Accept the terms of service.
+3. Enter your name, email address, and a password.
+4. Accept the terms of service.
 
 ### 2. Verify your email
 
@@ -41,7 +31,26 @@ A verification link is sent to the email address provided. Click the link to act
 !!! warning "Check spam folder"
     If you do not receive the verification email within 5 minutes, check your spam/junk folder. If still missing, click **Resend Verification** on the login page.
 
-### 3. Add vehicles to your fleet
+### 3. Link your transporter record
+
+After verifying your email:
+
+1. Navigate to **Settings > Account**.
+2. Click **Link Transporter**.
+3. Enter one of the following identifiers that matches your record at the weighbridge:
+
+| Identifier | Description |
+|-----------|-------------|
+| Email | The email address registered for your company at the weighbridge |
+| Phone number | The phone number on your transporter record |
+| Transporter code | The short code assigned by the weighbridge operator |
+
+4. Click **Link**. Your weighing history and vehicle data will be available once the link is confirmed.
+
+!!! info "Not finding a match?"
+    Contact the weighbridge operator to confirm your registered email, phone, or code. Your transporter record must exist in their TruLoad system before you can link it.
+
+### 5. Add vehicles to your fleet
 
 After logging in for the first time:
 
@@ -54,7 +63,7 @@ After logging in for the first time:
 !!! tip "Bulk import"
     For large fleets, use the **Import CSV** option to upload multiple vehicles at once. The CSV format is: `registration, make, model, axle_count, tare_weight`.
 
-### 4. Select a subscription plan
+### 6. Select a subscription plan
 
 New accounts start with a **7-day free trial** on the Standard plan. Before the trial expires, select a plan from the [Subscriptions](subscriptions.md) page.
 

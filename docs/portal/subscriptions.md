@@ -1,32 +1,31 @@
 # Subscriptions
 
-The Transporter Portal offers three subscription plans to match your fleet size and reporting needs. All new accounts start with a **7-day free trial** on the Standard plan.
+The Transporter Portal offers three subscription plans to match your fleet size and reporting needs. The Basic plan is free. All new accounts start with a **7-day free trial** on the Standard plan.
 
 ## Plan Comparison
 
 | Feature | Basic | Standard | Premium |
 |---------|-------|----------|---------|
-| **Monthly price** | KES 500 | KES 1,500 | KES 3,500 |
-| **Annual price** | KES 5,000 (save 17%) | KES 15,000 (save 17%) | KES 35,000 (save 17%) |
+| **Monthly price** | Free | KES 5,000 | KES 15,000 |
 | Vehicles in fleet | Up to 10 | Up to 50 | Unlimited |
-| Team members | 1 (admin only) | Up to 5 | Unlimited |
+| Drivers | Up to 5 | Up to 25 | Unlimited |
 | Weighing history | 3 months | 12 months | 24 months |
-| Ticket downloads | 50 / month | Unlimited | Unlimited |
-| CSV export | | :material-check: | :material-check: |
-| Bulk ticket download | | :material-check: | :material-check: |
-| Email notifications | :material-check: | :material-check: | :material-check: |
-| SMS notifications | | :material-check: | :material-check: |
-| Daily summary email | | :material-check: | :material-check: |
-| Anomaly alerts | | | :material-check: |
+| Ticket downloads (PDF) | :material-check: | :material-check: | :material-check: |
+| Basic reports | :material-check: | :material-check: | :material-check: |
+| Driver trip reports | | :material-check: | :material-check: |
+| Cargo analysis reports | | :material-check: | :material-check: |
+| Fleet utilization reports | | | :material-check: |
+| Weight discrepancy alerts | | | :material-check: |
 | API access | | | :material-check: |
-| Dedicated support | | | :material-check: |
+| Priority support | | :material-check: | :material-check: |
+| Custom branding | | | :material-check: |
 
 ## Choosing a Plan
 
 !!! tip "Which plan is right for you?"
-    - **Basic** -- ideal for owner-operators with a small fleet who need basic weighing record access
-    - **Standard** -- suited for mid-size transporters who need full history, team access, and data export
-    - **Premium** -- designed for large fleet operators who need API integration, unlimited access, and priority support
+    - **Basic (Free)** -- ideal for owner-operators with a small fleet who need basic weighing record access
+    - **Standard (KES 5,000/mo)** -- suited for mid-size transporters who need full history, driver reports, and cargo analysis
+    - **Premium (KES 15,000/mo)** -- designed for large fleet operators who need API integration, unlimited access, discrepancy alerts, and custom branding
 
 ## Managing Your Subscription
 
@@ -62,12 +61,11 @@ The Transporter Portal offers three subscription plans to match your fleet size 
 |--------|-----------|
 | M-PESA (STK push) | :material-check: |
 | M-PESA (paybill) | :material-check: |
-| Bank transfer | :material-check: (annual plans only) |
+| Bank transfer | :material-check: |
 
 ### Billing cycle
 
-- **Monthly plans** are billed on the same date each month (based on your signup date)
-- **Annual plans** are billed once per year with a 17% discount
+- Plans are billed monthly on the same date each month (based on your signup date)
 - Invoices are generated automatically and available under **Settings > Billing History**
 - Payment reminders are sent 3 days before the due date
 

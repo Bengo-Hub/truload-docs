@@ -30,8 +30,8 @@ Shows the transaction status badge:
 
 | Status | Meaning |
 |--------|---------|
-| **Pending** | First pass captured; awaiting second pass |
-| **FirstWeightCaptured** | Synonym for Pending in the API |
+| **Pending** | Transaction created; no weight captured yet |
+| **FirstWeightCaptured** | First pass captured; awaiting second pass |
 | **Complete** | Both passes done; final ticket available |
 | **ToleranceExceeded** | Weight variance beyond configured tolerance — supervisor approval required |
 
@@ -131,7 +131,7 @@ The ticket list supports filtering by:
 |--------|---------|
 | Date range | From / to date |
 | Time range | From / to time (within the date range) |
-| Status | All / Pending / First Weight Done / Complete / Tolerance Exceeded |
+| Status | All / Pending / First Weight Captured / Complete / Tolerance Exceeded |
 | Station | All stations or a specific station |
 | Vehicle registration | Partial match |
 | Ticket number | Exact or partial match |
