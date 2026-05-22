@@ -84,6 +84,48 @@ modelBuilder.Entity<WeighingTransaction>()
 3. Restart the pod — migrations and seeding run automatically.
 4. Create the organisation record in the `truload` admin database linking to the new tenant slug.
 
+## Subscription Enforcement and Bypass Rules
+
+`SubscriptionEnforcementMiddleware` runs after authentication and checks whether a commercial tenant (`TenantType == "CommercialWeighing"`) has an active subscription before allowing the request.
+
+### Enforcement Flow
+
+```
+authenticated request
+  → check billing_mode JWT claim == "service_charge" → bypass ✅
+  → check is_demo JWT claim == "true"                → bypass ✅
+  → skip exempt paths (/auth, /portal, /health, /hangfire)
+  → read Redis: sub:status:{orgId}
+      cache hit  → ACTIVE / TRIAL → pass through ✅
+               → EXPIRED / CANCELLED / NONE → 402 ❌
+      cache miss → load org from DB
+          org not found / not CommercialWeighing     → pass through ✅
+          org.BillingMode == "service_charge"         → bypass ✅
+          org.IsDemo == true                          → bypass ✅
+          org.SsoTenantSlug empty                    → pass through ✅ (misconfigured)
+          call subscriptions-api → cache 60 s → enforce
+```
+
+### Bypass Modes
+
+| Mode | How to configure | Effect |
+|------|-----------------|--------|
+| **Service charge** | Set `Organization.BillingMode = "service_charge"` | Org pays per-transaction via treasury; subscription gating is completely bypassed |
+| **Demo** | Set `Organization.IsDemo = true` | Demo/training org; subscription gating is completely bypassed |
+| **Non-commercial** | `Organization.TenantType != "CommercialWeighing"` | Enforcement-mode orgs never pay a TruLoad subscription |
+
+Both `BillingMode` and `IsDemo` are embedded in the access token by `JwtService.GenerateAccessToken`, so the middleware fast-path runs from JWT claims and avoids any DB or Redis lookup for bypass tenants.
+
+### Redis Cache Key
+
+```
+sub:status:{orgId}   TTL: 60 seconds
+```
+
+The key is invalidated automatically by `SubscriptionCacheInvalidationService` (see [`BACKGROUND_JOBS.md`](BACKGROUND_JOBS.md)) when subscriptions-api publishes a `tenant.subscription.updated` NATS event.
+
+---
+
 ## Background Jobs and Tenant Context
 
 Background jobs (Hangfire) have no HTTP request context and therefore no `ITenantContext`. Services called from background jobs must either:

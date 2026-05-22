@@ -55,6 +55,51 @@ public class PortalDailySummaryJob
 
 **Important**: Jobs have no `ITenantContext`. Any service call that depends on tenant context must use `IgnoreQueryFilters()` for DB queries and pass `tenantSlug` explicitly to notification services.
 
+## ASP.NET Core Hosted Services (BackgroundService)
+
+In addition to Hangfire jobs, TruLoad runs long-lived background services registered via `AddHostedService`. These are not visible in the Hangfire dashboard — they run as .NET `IHostedService` instances within the process.
+
+### SubscriptionCacheInvalidationService
+
+| Property | Value |
+|----------|-------|
+| Class | `Services.Background.SubscriptionCacheInvalidationService` |
+| Trigger | NATS subject `tenant.subscription.updated` (event-driven, not scheduled) |
+| Redis key invalidated | `sub:status:{orgId}` |
+| Enabled by | `Nats:Enabled = true` in configuration |
+
+**What it does:**
+
+Whenever subscriptions-api publishes a `tenant.subscription.updated` event (on plan change or status change for any tenant), this service:
+
+1. Parses the `tenant_slug` from the event payload
+2. Resolves `tenant_slug → Organization.SsoTenantSlug → org.Id` via a scoped DB query
+3. Deletes the `sub:status:{orgId}` Redis key
+
+Without this, `SubscriptionEnforcementMiddleware` would continue serving the cached (potentially stale) status for up to 60 seconds. With it, the next request after a plan change hits subscriptions-api for a fresh status.
+
+**Configuration:**
+
+```json
+"Nats": {
+  "Url": "nats://localhost:4222",
+  "Enabled": false
+}
+```
+
+Set `Nats:Enabled = false` (the default) in development to prevent startup failures when NATS is not running locally. In production, override via:
+
+```
+NATS__URL=nats://nats.platform.svc.cluster.local:4222
+NATS__ENABLED=true
+```
+
+**Why `sub:status:{orgId}` and not `tenant:{slug}`?**
+
+All other BengoBox Go services use `tenant:{slug}` as their Redis subscription cache key. TruLoad predates the uniform pattern and uses `sub:status:{orgId}` (org UUID). The `SubscriptionCacheInvalidationService` handles the slug→UUID translation transparently.
+
+---
+
 ## Stale Weighing Alert Flow
 
 ```mermaid

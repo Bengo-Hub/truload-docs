@@ -4,6 +4,70 @@ Source: `truload-backend` — continuous-release model; each merge to `main` is 
 
 ---
 
+## v1.3.2 — 2026-05-22
+
+### Subscription Uniform Integration
+
+This release brings TruLoad's subscription enforcement to full parity with the uniform subscription workflow deployed across all other BengoBox platform services (ordering, POS, inventory, logistics, treasury, marketflow).
+
+**Critical bug fix — subscription enforcement was non-functional**
+
+`SubscriptionEnforcementMiddleware` was reading the `org_id` JWT claim but `JwtService.GenerateAccessToken` was emitting `organization_id`. These names never matched, so `orgIdClaim` was always `null` and enforcement was silently skipped for every commercial tenant. Fixed in this release:
+
+- `JwtService.GenerateAccessToken` now emits `org_id`
+- Middleware gains a backward-compat fallback to `organization_id` for sessions with tokens issued before this fix
+
+**Organisation bypass fields (`billing_mode`, `is_demo`)**
+
+New columns on the `organizations` table (migration `20260522000928_AddOrganizationBypassFields`):
+
+| Column | Type | Purpose |
+|--------|------|---------|
+| `billing_mode` | `VARCHAR(50)` nullable | `"service_charge"` → bypass subscription gating; tenant is billed per-transaction instead of via subscription |
+| `is_demo` | `BOOLEAN DEFAULT FALSE` | Demo/training orgs bypass all subscription enforcement |
+
+Both values are now embedded as JWT claims by `JwtService.GenerateAccessToken` (no extra DB query — the `Organization` record is already loaded for `org_code`).
+
+**Subscription enforcement middleware — bypass logic**
+
+`SubscriptionEnforcementMiddleware` now has two fast-path bypasses before the Redis cache lookup:
+
+1. JWT claim `billing_mode == "service_charge"` → pass through immediately
+2. JWT claim `is_demo == "true"` → pass through immediately
+3. Belt-and-suspenders: if neither claim is present (stale token), the org model `BillingMode`/`IsDemo` is checked after the DB load on a cache miss
+
+**NATS subscription cache invalidation**
+
+New `Services/Background/SubscriptionCacheInvalidationService` (ASP.NET Core `BackgroundService`):
+
+- Subscribes to the `tenant.subscription.updated` NATS subject published by subscriptions-api on every plan or status change
+- Extracts `tenant_slug` from the event payload (supports both flat `{ tenant_slug }` and nested `{ payload: { tenant_slug } }` formats)
+- Resolves `tenant_slug → Organization.SsoTenantSlug → org.Id` via a scoped DB query
+- Deletes `sub:status:{orgId}` from Redis — forces the next request to re-fetch from subscriptions-api rather than serving stale 60-second cached status
+- Controlled by `Nats:Enabled` (defaults `false` — safe for dev without a NATS server)
+
+NuGet added: `NATS.Net`.
+
+New `appsettings.json` section:
+```json
+"Nats": {
+  "Url": "nats://localhost:4222",
+  "Enabled": false
+}
+```
+
+Production K8s env override:
+```
+NATS__URL=nats://nats.platform.svc.cluster.local:4222
+NATS__ENABLED=true
+```
+
+**Frontend — no changes required**
+
+`truload-frontend` was already aligned with the uniform subscription pattern (v0.1.10 of shared-ui-lib). The `use-subscription` hook already reads `billing_mode` and `is_demo` from JWT claims and the `SubscriptionBanner` already passes `isServiceCharge` and `isDemo` to the shared component. These features activate automatically once the backend starts embedding the bypass claims in new tokens.
+
+---
+
 ## v1.3.1 — 2026-05-21
 
 ### Tolerance Precedence Fix and Standard Config Updates
