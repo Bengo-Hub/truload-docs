@@ -21,10 +21,22 @@ TruLoad runs on a single-node Kubernetes cluster hosted on Contabo Cloud VPS
 
 ## Hostnames
 
+There is a single shared backend API (`truloadapi.codevertexitsolutions.com`) and a single shared frontend app. Tenants access the platform through their own frontend hostnames. The `X-Env` header (sent automatically by the frontend based on hostname) routes requests to the correct tenant database.
+
+### TruLoad SaaS (commercial weighing tenants)
+
 | Environment | Backend API | Frontend | Docs |
 |---|---|---|---|
-| Test | [kuraweighapitest.masterspace.co.ke](https://kuraweighapitest.masterspace.co.ke) | [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke) | [kuraweigh-docs.masterspace.co.ke](https://kuraweigh-docs.masterspace.co.ke) |
 | Production | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [truload.codevertexitsolutions.com](https://truload.codevertexitsolutions.com) | [truload-docs.codevertexitsolutions.com](https://truload-docs.codevertexitsolutions.com) |
+
+### KURA Tenant (Kenya Urban Roads Authority — axle load enforcement)
+
+| Environment | Backend API | Frontend | Notes |
+|---|---|---|---|
+| Live | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [kuraweigh.kura.go.ke](https://kuraweigh.kura.go.ke) | Uses `kuraweigh` dedicated DB; `X-Env: live` |
+| Test | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke) | Uses shared `truload` DB; `X-Env: test` |
+
+The `X-Env` header is injected automatically by the frontend based on hostname — `kuraweigh.kura.go.ke` sends `X-Env: live` and `kuraweightest.masterspace.co.ke` sends `X-Env: test`. See [Multi-Tenancy Architecture](MULTI_TENANCY.md#environment-switching-x-env) for details.
 
 Every host terminates TLS via a cert-manager-issued Let's Encrypt
 certificate, served through the shared NGINX ingress class.
@@ -53,15 +65,16 @@ Shared infrastructure in the `infra` namespace:
 
 ## Test vs production segregation
 
-| Axis | Test | Production |
-|---|---|---|
-| DNS zone | `*.masterspace.co.ke` | `*.codevertexitsolutions.com` |
-| Database | `truload_test` on shared PostgreSQL | `truload` on shared PostgreSQL |
-| Redis | Dedicated logical DB index | Dedicated logical DB index |
-| JWT signing key | Distinct `JWT_SECRET` | Distinct `JWT_SECRET` |
-| Pesaflow credentials | eCitizen sandbox | eCitizen production |
-| Callback URL | Points at test backend | Points at production backend |
-| Backups | Nightly, retained 7 days | Nightly, retained 30 days |
+| Axis | KURA Test | KURA Live | TruLoad SaaS |
+|---|---|---|---|
+| Frontend domain | `kuraweightest.masterspace.co.ke` | `kuraweigh.kura.go.ke` | `truload.codevertexitsolutions.com` |
+| `X-Env` header | `test` | `live` | `live` |
+| Database | `truload` (shared) | `kuraweigh` (dedicated) | `truload` (shared) |
+| Pesaflow credentials | eCitizen sandbox | eCitizen production | N/A |
+| Redis | Shared logical DB | Shared logical DB | Shared logical DB |
+| Backups | Nightly, retained 7 days | Nightly, retained 30 days | Nightly, retained 30 days |
+
+The same backend pod and JWT signing key serve all environments. The `X-Env` request header (auto-injected by the frontend) switches the tenant database connection at the middleware layer — no separate backend deployment is needed for test vs live.
 
 Secrets are stored as Kubernetes `Secret` objects, synced via a
 dedicated CI workflow in the GitOps repository. They are never placed

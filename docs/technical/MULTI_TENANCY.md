@@ -42,6 +42,29 @@ truload, (default) → DefaultConnection → truload database
 TENANTDATABASES__KURA=Host=pg-host;Database=kuraweigh;Username=...;Password=...
 ```
 
+## Environment Switching (X-Env)
+
+Some tenants (such as KURA) operate two frontend domains — one for live operations and one for testing — both pointing at the same backend. The `X-Env` HTTP header lets the frontend signal which database to use for the request.
+
+### How it works
+
+1. The frontend (`src/lib/api/client.ts`) adds `X-Env: live` or `X-Env: test` to every API request based on the current hostname:
+   - `kuraweigh.kura.go.ke` → `X-Env: live`
+   - `kuraweightest.masterspace.co.ke` → `X-Env: test`
+   - `localhost` / TruLoad SaaS domains → `X-Env: test`
+
+2. `TenantContextMiddleware` reads the header (or auto-detects from the `Origin`/`Host` header) and sets `ITenantContext.IsTestMode`.
+
+3. `TenantConnectionStringProvider.Resolve(tenantSlug, isTestMode)` short-circuits to the default `truload` database when `isTestMode == true`, regardless of the tenant slug. This means a KURA user on the test domain always hits the shared truload DB, not the dedicated kuraweigh DB.
+
+### CORS configuration
+
+The NGINX ingress `cors-allow-headers` annotation must include `X-Env` so browsers do not block the header on cross-origin requests. This is configured in `devops-k8s/apps/truload-backend/values.yaml`.
+
+### Security note
+
+`X-Env: test` only bypasses the dedicated tenant DB selection — it does NOT bypass authentication, authorization, or subscription enforcement. A valid JWT is still required for every request.
+
 ## Startup: Auto-Migration
 
 On startup, the app automatically migrates and seeds **every** configured database:
