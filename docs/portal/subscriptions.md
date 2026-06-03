@@ -1,12 +1,12 @@
 # Subscriptions
 
-The Transporter Portal offers three subscription plans to match your fleet size and reporting needs. The Basic plan is free. All new accounts start with a **7-day free trial** on the Standard plan.
+The Transporter Portal offers three subscription plans to match your fleet size and reporting needs. All new accounts start with a **7-day free trial** on the Standard plan.
 
 ## Plan Comparison
 
 | Feature | Basic | Standard | Premium |
 |---------|-------|----------|---------|
-| **Monthly price** | Free | KES 5,000 | KES 15,000 |
+| **Monthly price** | KES 3,000 | KES 5,000 | KES 15,000 |
 | Vehicles in fleet | Up to 10 | Up to 50 | Unlimited |
 | Drivers | Up to 5 | Up to 25 | Unlimited |
 | Weighing history | 3 months | 12 months | 24 months |
@@ -23,7 +23,7 @@ The Transporter Portal offers three subscription plans to match your fleet size 
 ## Choosing a Plan
 
 !!! tip "Which plan is right for you?"
-    - **Basic (Free)** -- ideal for owner-operators with a small fleet who need basic weighing record access
+    - **Basic (KES 3,000/mo)** -- ideal for owner-operators with a small fleet who need basic weighing record access
     - **Standard (KES 5,000/mo)** -- suited for mid-size transporters who need full history, driver reports, and cargo analysis
     - **Premium (KES 15,000/mo)** -- designed for large fleet operators who need API integration, unlimited access, discrepancy alerts, and custom branding
 
