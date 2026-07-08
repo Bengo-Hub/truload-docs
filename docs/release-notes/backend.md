@@ -8,7 +8,7 @@ Source: `truload-backend` — continuous-release model; each merge to `main` is 
 
 ### Subscription Uniform Integration
 
-This release brings TruLoad's subscription enforcement to full parity with the uniform subscription workflow deployed across all other BengoBox platform services (ordering, POS, inventory, logistics, treasury, marketflow).
+This release brings TruLoad's subscription enforcement to full parity with the uniform subscription workflow deployed across all other Codevertex platform services (ordering, POS, inventory, logistics, treasury, marketflow).
 
 **Critical bug fix — subscription enforcement was non-functional**
 

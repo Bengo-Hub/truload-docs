@@ -96,7 +96,7 @@ NATS__ENABLED=true
 
 **Why `sub:status:{orgId}` and not `tenant:{slug}`?**
 
-All other BengoBox Go services use `tenant:{slug}` as their Redis subscription cache key. TruLoad predates the uniform pattern and uses `sub:status:{orgId}` (org UUID). The `SubscriptionCacheInvalidationService` handles the slug→UUID translation transparently.
+All other Codevertex Go services use `tenant:{slug}` as their Redis subscription cache key. TruLoad predates the uniform pattern and uses `sub:status:{orgId}` (org UUID). The `SubscriptionCacheInvalidationService` handles the slug→UUID translation transparently.
 
 ---
 
