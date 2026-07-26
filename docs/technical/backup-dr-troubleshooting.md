@@ -69,7 +69,7 @@ and the reconciliation poll handle transient failures automatically.
 3. Check dependency health:
    `kubectl -n truload get pods`,
    `kubectl -n infra get pods`,
-   Grafana at `grafana.codevertexitsolutions.com`.
+   Grafana at `grafana.codevertexafrica.com`.
 4. Apply the relevant runbook step.
 5. Capture a post-incident note with timestamps.
 

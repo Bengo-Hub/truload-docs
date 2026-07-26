@@ -21,20 +21,20 @@ TruLoad runs on a single-node Kubernetes cluster hosted on Contabo Cloud VPS
 
 ## Hostnames
 
-There is a single shared backend API (`truloadapi.codevertexitsolutions.com`) and a single shared frontend app. Tenants access the platform through their own frontend hostnames. The `X-Env` header (sent automatically by the frontend based on hostname) routes requests to the correct tenant database.
+There is a single shared backend API (`truloadapi.codevertexafrica.com`) and a single shared frontend app. Tenants access the platform through their own frontend hostnames. The `X-Env` header (sent automatically by the frontend based on hostname) routes requests to the correct tenant database.
 
 ### TruLoad SaaS (commercial weighing tenants)
 
 | Environment | Backend API | Frontend | Docs |
 |---|---|---|---|
-| Production | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [truload.codevertexitsolutions.com](https://truload.codevertexitsolutions.com) | [truload-docs.codevertexitsolutions.com](https://truload-docs.codevertexitsolutions.com) |
+| Production | [truloadapi.codevertexafrica.com](https://truloadapi.codevertexafrica.com) | [truload.codevertexafrica.com](https://truload.codevertexafrica.com) | [truload-docs.codevertexafrica.com](https://truload-docs.codevertexafrica.com) |
 
 ### KURA Tenant (Kenya Urban Roads Authority — axle load enforcement)
 
 | Environment | Backend API | Frontend | Notes |
 |---|---|---|---|
-| Live | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [kuraweigh.kura.go.ke](https://kuraweigh.kura.go.ke) | Uses `kuraweigh` dedicated DB; `X-Env: live` |
-| Test | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke) | Uses shared `truload` DB; `X-Env: test` |
+| Live | [truloadapi.codevertexafrica.com](https://truloadapi.codevertexafrica.com) | [kuraweigh.kura.go.ke](https://kuraweigh.kura.go.ke) | Uses `kuraweigh` dedicated DB; `X-Env: live` |
+| Test | [truloadapi.codevertexafrica.com](https://truloadapi.codevertexafrica.com) | [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke) | Uses shared `truload` DB; `X-Env: test` |
 
 The `X-Env` header is injected automatically by the frontend based on hostname — `kuraweigh.kura.go.ke` sends `X-Env: live` and `kuraweightest.masterspace.co.ke` sends `X-Env: test`. See [Multi-Tenancy Architecture](MULTI_TENANCY.md#environment-switching-x-env) for details.
 
@@ -67,7 +67,7 @@ Shared infrastructure in the `infra` namespace:
 
 | Axis | KURA Test | KURA Live | TruLoad SaaS |
 |---|---|---|---|
-| Frontend domain | `kuraweightest.masterspace.co.ke` | `kuraweigh.kura.go.ke` | `truload.codevertexitsolutions.com` |
+| Frontend domain | `kuraweightest.masterspace.co.ke` | `kuraweigh.kura.go.ke` | `truload.codevertexafrica.com` |
 | `X-Env` header | `test` | `live` | `live` |
 | Database | `truload` (shared) | `kuraweigh` (dedicated) | `truload` (shared) |
 | Pesaflow credentials | eCitizen sandbox | eCitizen production | N/A |

@@ -72,4 +72,4 @@
 | Environment | Backend API | Frontend | Docs |
 |---|---|---|---|
 | Test | [kuraweighapitest.masterspace.co.ke](https://kuraweighapitest.masterspace.co.ke) | [kuraweightest.masterspace.co.ke](https://kuraweightest.masterspace.co.ke) | [kuraweigh-docs.masterspace.co.ke](https://kuraweigh-docs.masterspace.co.ke) |
-| Production | [truloadapi.codevertexitsolutions.com](https://truloadapi.codevertexitsolutions.com) | [truload.codevertexitsolutions.com](https://truload.codevertexitsolutions.com) | [truload-docs.codevertexitsolutions.com](https://truload-docs.codevertexitsolutions.com) |
+| Production | [truloadapi.codevertexafrica.com](https://truloadapi.codevertexafrica.com) | [truload.codevertexafrica.com](https://truload.codevertexafrica.com) | [truload-docs.codevertexafrica.com](https://truload-docs.codevertexafrica.com) |

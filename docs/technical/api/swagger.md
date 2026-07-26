@@ -4,13 +4,13 @@ Swagger exposes every backend endpoint with request/response schemas and
 an in-browser "Try it out" button.
 
 <a class="md-button md-button--primary" href="https://kuraweighapitest.masterspace.co.ke/v1/docs/index.html">:material-open-in-new: Open live Swagger (test)</a>
-<a class="md-button" href="https://truloadapi.codevertexitsolutions.com/v1/docs/index.html">:material-open-in-new: Open live Swagger (production)</a>
+<a class="md-button" href="https://truloadapi.codevertexafrica.com/v1/docs/index.html">:material-open-in-new: Open live Swagger (production)</a>
 
 ## URLs
 
 - Local: `http://localhost:4000/v1/docs/index.html`
 - Test: <https://kuraweighapitest.masterspace.co.ke/v1/docs/index.html>
-- Production: <https://truloadapi.codevertexitsolutions.com/v1/docs/index.html>
+- Production: <https://truloadapi.codevertexafrica.com/v1/docs/index.html>
 
 ## Authorising a request
 

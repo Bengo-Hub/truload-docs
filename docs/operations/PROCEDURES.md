@@ -37,7 +37,7 @@ kubectl rollout restart deployment/truload-backend -n truload
 
 ### Access the Dashboard
 
-Navigate to `https://truloadapi.codevertexitsolutions.com/hangfire` and log in with an admin Identity cookie.
+Navigate to `https://truloadapi.codevertexafrica.com/hangfire` and log in with an admin Identity cookie.
 
 ### Retry Failed Jobs
 

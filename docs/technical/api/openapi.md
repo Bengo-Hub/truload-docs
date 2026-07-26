@@ -3,7 +3,7 @@
 The backend serves its OpenAPI 3 document on every environment.
 
 <a class="md-button md-button--primary" href="https://kuraweighapitest.masterspace.co.ke/v1/docs/v1/swagger.json">:material-download: Test host</a>
-<a class="md-button" href="https://truloadapi.codevertexitsolutions.com/v1/docs/v1/swagger.json">:material-download: Production</a>
+<a class="md-button" href="https://truloadapi.codevertexafrica.com/v1/docs/v1/swagger.json">:material-download: Production</a>
 
 ## Uses
 

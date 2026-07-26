@@ -124,7 +124,7 @@ NATS__ENABLED=true
 
 **Treasury pay portal URL from config**
 
-- `Treasury:PayPortalBaseUrl` added to `appsettings.json` (default `https://books.codevertexitsolutions.com/pay`)
+- `Treasury:PayPortalBaseUrl` added to `appsettings.json` (default `https://books.codevertexafrica.com/pay`)
 - Both `CommercialWeighingService` and `InvoiceService` now read this from `IConfiguration`; hardcoded URL removed
 
 **Module visibility fixes**
