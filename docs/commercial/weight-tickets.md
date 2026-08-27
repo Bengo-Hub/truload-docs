@@ -34,8 +34,10 @@ Shows the transaction status badge:
 | **FirstWeightCaptured** | First pass captured; awaiting second pass |
 | **Complete** | Both passes done; final ticket available |
 | **ToleranceExceeded** | Weight variance beyond configured tolerance — supervisor approval required |
+| **Voided** | Transaction cancelled (or a tolerance exception was rejected) — recorded with a reason |
 
-A tolerance-exceeded transaction displays a warning until a supervisor approves the exception.
+A tolerance-exceeded transaction displays a warning and blocks final PDF generation until a
+supervisor approves (or rejects/voids) the exception.
 
 ### Vehicle Details
 
@@ -121,7 +123,10 @@ An interim PDF is available after the first pass for use as a delivery receipt. 
 
 ### Thermal printer
 
-TruLoad generates tickets formatted for standard 80mm thermal receipt printers. The ticket is auto-sent to the configured printer when the operator clicks **Print Ticket** on the weighing screen.
+!!! warning "Not yet built"
+    80mm thermal ticket printing is planned but not implemented today — only the A4 PDF above is
+    available. A station's **Printer Configuration** (see [Station Configuration](setup.md#station-configuration))
+    is metadata-only for now and does not drive an actual print job.
 
 ## Searching and Filtering Tickets
 
@@ -131,7 +136,7 @@ The ticket list supports filtering by:
 |--------|---------|
 | Date range | From / to date |
 | Time range | From / to time (within the date range) |
-| Status | All / Pending / First Weight Captured / Complete / Tolerance Exceeded |
+| Status | All / Pending / First Weight Captured / Complete / Tolerance Exceeded / Voided |
 | Station | All stations or a specific station |
 | Vehicle registration | Partial match |
 | Ticket number | Exact or partial match |
@@ -171,7 +176,12 @@ The ticket adapts based on how the weight was captured:
 | **Mobile** | No per-deck section — mobile axle-by-axle scale data is not shown on the final ticket |
 | **Standard (static)** | Shows combined weight only |
 
-The scale type is set automatically based on which weighing page was used (`/weighing` for standard, `/weighing/multideck` for multideck, `/weighing/mobile` for mobile).
+The scale type is set automatically based on which weighing page was used: `/weighing/multideck` for
+multideck, `/weighing/mobile` for mobile. `/weighing` itself is a hub page (Operations + Tickets)
+that routes an operator into one of those two capture flows — there is no separate standalone
+capture stepper for a plain static scale today. **Standard (static)** ticket rendering (combined
+weight only, no deck breakdown) is the fallback shown whenever a transaction has no multideck/mobile
+scale-type tag at all, e.g. one created without going through either dedicated capture flow.
 
 ## Ticket Lifecycle
 

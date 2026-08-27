@@ -96,6 +96,16 @@ Comprehensive month-end summary:
 - Anomaly summary (voids, adjustments, tare overrides)
 - Designed for finance and management sign-off
 
+## Additional Reports
+
+Beyond the 10 core reports above, the catalog also includes a few extra report types that don't map
+1:1 to the list above:
+
+- **Tonnage by Route** — net weight totals grouped by origin→destination pair, using the Origin/Destination configured on each transaction. Enabled automatically once you've set up [Origins/Destinations](setup.md#origin-and-destination-management).
+- **Weight Discrepancy**, **Commercial Revenue**, **Throughput**, **Driver Productivity** — supplementary breakdowns available in the report catalog; use the Reports screen's own catalog listing to see the current field-level detail for each.
+
+All reports support **PDF**, **CSV**, and **XLSX** export.
+
 ## Generating Reports
 
 1. Navigate to **Reports** from the main menu.
@@ -110,11 +120,24 @@ Comprehensive month-end summary:
 
 ## Access by Role
 
+Each report type is only visible to roles with sufficient access — the report catalog itself is
+filtered per caller, so a role that can't see a given report won't see it listed at all, not just
+blocked from generating it.
+
+!!! info "Role names"
+    The table below uses generic role labels for readability. TruLoad's actual seeded commercial
+    roles are **Commercial Weighing Manager** (≈ Admin), **Commercial Supervisor** (≈ Supervisor),
+    **Commercial Weighing Operator** (≈ Operator), **Commercial Finance** (≈ Finance), and
+    **Commercial Auditor** (read-only access to every report, including Transaction Audit Log).
+    Permissions in TruLoad are fully configurable per tenant — the table reflects the recommended
+    default, not a hardcoded restriction.
+
 | Type | Operator | Supervisor | Finance | Admin |
 |------|----------|------------|---------|-------|
 | Daily Weighing Summary | :material-check: | :material-check: | :material-check: | :material-check: |
 | Tonnage by Cargo Type | | :material-check: | :material-check: | :material-check: |
 | Tonnage by Transporter | | :material-check: | :material-check: | :material-check: |
+| Tonnage by Route | | :material-check: | :material-check: | :material-check: |
 | Vehicle Utilization | | :material-check: | | :material-check: |
 | Tare Verification | | :material-check: | | :material-check: |
 | Quality Deductions | | :material-check: | :material-check: | :material-check: |

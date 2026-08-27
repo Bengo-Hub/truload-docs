@@ -31,7 +31,7 @@ This is the most common pattern for **receiving** goods. The loaded vehicle arri
 ### Step-by-step
 
 1. **Open the Weighing module** and confirm the station and shift are active.
-2. **Start a new transaction** and select the weighing direction as `Inbound`.
+2. **Start a new transaction** and choose **Gross** as the first weight type (there is no separate "Inbound/Outbound" toggle — the direction is expressed entirely by which weight you capture first).
 3. **Enter vehicle details**:
     - Registration number (plate)
     - Transporter name (auto-populated if the vehicle is registered)
@@ -61,7 +61,7 @@ Used when **dispatching** goods. The empty vehicle arrives first (tare), loads u
 
 ### Step-by-step
 
-1. **Start a new transaction** and select the weighing direction as `Outbound`.
+1. **Start a new transaction** and choose **Tare** as the first weight type.
 2. **Enter vehicle details** (same fields as inbound).
 3. **Capture the tare weight** (vehicle is empty).
 4. **Print the interim ticket** and release the vehicle to the loading bay.
@@ -97,10 +97,14 @@ flowchart LR
 
 | State | Meaning |
 |-------|---------|
-| `Pending` | First pass captured, awaiting second pass |
+| `Pending` | Transaction created, no weight captured yet |
+| `FirstWeightCaptured` | First pass captured, awaiting second pass |
 | `Complete` | Both passes captured, net weight calculated |
+| `ToleranceExceeded` | Net discrepancy beyond the configured tolerance — needs supervisor approval before the ticket can be finalised |
 | `Voided` | Transaction cancelled before completion |
-| `Adjusted` | Supervisor applied a manual correction |
+
+These match the ticket status badge described in [Weight Tickets](weight-tickets.md#ticket-status)
+exactly — there is a single set of transaction states used throughout the commercial module.
 
 ## Resume Flow (Returning Vehicle)
 
@@ -116,7 +120,7 @@ The resume dialog shows the most recent open transaction if multiple exist.
 
 ### Stale Transaction Notifications
 
-If a first-weight-only transaction remains open past the threshold (default 8 hours) without a second weight being captured, TruLoad automatically emails the **Commercial Weighing Manager** and **Station Manager** assigned to that organisation. Notifications are sent once per transaction (tracked by the `StaleAlertSentAt` field). The threshold can be configured in **Setup > System Config > Commercial Pending Weighing Threshold (hours)**.
+If a first-weight-only transaction remains open past the threshold (default 8 hours) without a second weight being captured, TruLoad automatically emails the **Commercial Weighing Manager** and **Station Manager** assigned to that organisation. Notifications are sent once per transaction (tracked by the `StaleAlertSentAt` field). The threshold can be configured in **Setup > Settings > Weighing > Commercial Pending Weighing Threshold (hours)**.
 
 ## Handling Exceptions
 
@@ -131,9 +135,10 @@ Pending transactions remain open. A supervisor can:
 
 If the net weight falls outside the tolerance for the selected cargo type:
 
-1. The system flags the transaction with a warning.
-2. The supervisor reviews and can approve, reject, or request a reweigh.
-3. All overrides are recorded in the audit log.
+1. The system flags the transaction `ToleranceExceeded` with a warning; the transaction still completes normally otherwise.
+2. A supervisor with `weighing.override` can **Approve** the exception (unblocks final ticket generation) or **Reject** it (voids the transaction, requiring a fresh weighing).
+3. The final ticket PDF cannot be generated while a `ToleranceExceeded` transaction is unapproved.
+4. All decisions are recorded in the audit log.
 
 ### Scale fault during capture
 

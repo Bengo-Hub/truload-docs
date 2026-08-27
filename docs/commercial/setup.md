@@ -66,17 +66,24 @@ Navigate to **Setup > Weighing Metadata > Cargo Types**:
 |-------|-------------|
 | **Name** | Display name (e.g., "Maize", "Cement", "Ballast") |
 | **Code** | Short code for tickets and reports (e.g., `MZ`, `CM`, `BL`) |
-| **Default tolerance** | Override the global tolerance for this cargo type |
 | **Moisture target %** | Target moisture content for deduction calculation |
 | **Foreign matter limit %** | Threshold above which foreign matter deductions apply |
+| **This organisation only** | When checked, this cargo type is only visible/usable within your organisation. Unchecked (default) makes it a shared entry visible to every tenant on the platform — this is how every pre-existing cargo type behaves today. |
 | **Active** | Enable/disable the cargo type |
+
+!!! info "Tolerance override lives on the Tolerances page, not here"
+    There is no tolerance field on the Cargo Type form itself. To override the global tolerance
+    for a specific commodity, create a rule scoped to that cargo type on
+    **[Setup > Tolerances](#tolerance-settings)** — see [Tolerance Settings](#tolerance-settings)
+    above for the exact fields.
 
 ### Adding a new cargo type
 
 1. Click **Add Cargo Type**.
-2. Fill in the name, code, and tolerance override (leave blank to use the global default).
-3. Configure quality parameters if deductions are enabled for this commodity.
-4. Click **Save**.
+2. Fill in the name and code.
+3. Check **This organisation only** if this cargo type should not be visible to other tenants (leave unchecked to add it as a shared/global entry, the default and most common case).
+4. Configure quality parameters if deductions are enabled for this commodity.
+5. Click **Save**.
 
 The cargo type is immediately available in the weighing capture screen.
 
@@ -87,8 +94,9 @@ Origins and destinations are used for logistics tracking and reporting. They app
 Navigate to **Setup > Weighing Metadata > Origins/Dest.**:
 
 1. Click **Add Location**.
-2. Enter the name, code, country, and location type (Origin / Destination / Both).
-3. Click **Save**.
+2. Enter the name, code, country, and location type — this describes the *kind* of place (city, town, port, border crossing, warehouse), not whether it's used as an origin or a destination. The same location can be selected as either an origin or a destination during capture; there is no separate origin/destination role flag.
+3. Check **This organisation only** if this location should not be visible to other tenants (default: shared/global, same convention as Cargo Types above).
+4. Click **Save**.
 
 !!! tip "Route-based reporting"
     Configuring origins and destinations enables the **Tonnage by Route** report, which shows cargo flows between locations.
@@ -105,17 +113,17 @@ Navigate to **Setup > Weighing Metadata**:
 
 ## Station Configuration
 
-Each station (physical weighbridge site) has its own configuration. Navigate to **Setup > Stations**:
+Each station (physical weighbridge site) has its own configuration. Navigate to **Users & Roles > Stations** (station and user/role management are managed together on this screen, not under Setup):
 
 | Setting | Description |
 |---------|-------------|
 | **Station name** | Display name in the UI and on tickets |
 | **Station code** | Short code for ticket numbering |
 | **Address** | Physical location |
-| **Operating hours** | Define shift boundaries |
-| **Default weighing mode** | `Enforcement` or `Commercial` |
-| **Printer configuration** | Thermal printer model and connection |
-| **Ticket template** | Select the ticket layout (commercial or enforcement format) |
+| **Operating hours** | Define shift boundaries (start/end time) |
+| **Default weighing mode** | `Enforcement` or `Commercial` — **informational/reporting only**. The mode a station actually operates in is still determined by your organisation's tenant type; this field does not change routing behaviour. |
+| **Printer configuration** | Free-text/JSON printer details (name, model, connection) — **metadata only today**; TruLoad does not yet drive an 80mm thermal printer directly from this configuration (see [Weight Tickets > Printing](weight-tickets.md#printing)) |
+| **Ticket template** | Free-text label for the ticket layout you intend this station to use (commercial or enforcement format) |
 
 ## Quality Deduction Rules
 

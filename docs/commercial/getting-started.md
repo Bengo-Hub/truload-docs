@@ -25,13 +25,13 @@ Your TruLoad tenant is provisioned by the platform administrator with the **Comm
 
 ### 2. Configure your station
 
-1. Navigate to **Setup > Stations** and create a station for each physical weighbridge location.
+1. Navigate to **Users & Roles > Stations** and create a station for each physical weighbridge location.
 2. Set the station name, address, and operating hours.
 3. Assign the default cargo types handled at this station.
 
 ### 3. Set up users and roles
 
-1. Navigate to **Setup > Accounts** and create user accounts for operators, supervisors, and finance staff.
+1. Navigate to **Users & Roles > Accounts** and create user accounts for operators, supervisors, and finance staff.
 2. Assign roles:
 
 | Role | Access |
