@@ -26,7 +26,7 @@ flowchart TD
 
 ### Storing a tare weight
 
-1. Every tare weight captured during a normal two-pass transaction is automatically saved against the vehicle's registration number — there is no separate confirmation step.
+1. Every tare weight captured during a normal two-pass transaction is automatically saved against the vehicle's registration number. There is no separate confirmation step.
 2. The system sets the expiry date based on the configured tare validity period (default: 90 days).
 3. On subsequent visits, the stored tare is auto-applied when the vehicle registration is entered.
 
@@ -36,7 +36,7 @@ flowchart TD
     When a stored tare has expired, the system **blocks single-pass mode** for that vehicle and requires a fresh tare capture.
 
 - **Expiry period**: Configured per organisation in **Setup > Settings > Commercial > Default Tare Expiry (days)**
-- **Stale transaction threshold**: Separate from tare expiry — if first-weight-only transactions remain open past the configured hours (default 8 h), station managers receive an email alert. Configure in **Setup > Settings > Weighing > Commercial Pending Weighing Threshold (hours)**.
+- **Stale transaction threshold**: Separate from tare expiry. If first-weight-only transactions remain open past the configured hours (default 8 h), station managers receive an email alert. Configure in **Setup > Settings > Weighing > Commercial Pending Weighing Threshold (hours)**.
 - **Grace period**: Optionally allow a configurable number of days past expiry before hard-blocking
 - **Re-verification**: Any new tare capture automatically extends the expiry date
 
@@ -74,12 +74,12 @@ TruLoad monitors tare weights for drift that may indicate a data quality issue:
 
 | Anomaly | Detection Rule | Action |
 |---------|---------------|--------|
-| **Tare drift** | New measured tare differs from the vehicle's prior stored tare by more than the configured threshold (**Setup > Settings > Weighing > Tare Drift Anomaly Threshold %**, default 5%) | The transaction (or standalone tare-register entry) is flagged for supervisor review; the capture itself is **not blocked** — flagging is informational and runs in parallel with the normal workflow |
+| **Tare drift** | New measured tare differs from the vehicle's prior stored tare by more than the configured threshold (**Setup > Settings > Weighing > Tare Drift Anomaly Threshold %**, default 5%) | The transaction (or standalone tare-register entry) is flagged for supervisor review. The capture itself is **not blocked**; flagging is informational and runs alongside the normal workflow |
 
 !!! note "Scope"
     Vehicle-class-based range checks ("unusually high/low tare for this vehicle class") and
-    rapid-tare-change alerts are not yet implemented — TruLoad has no vehicle-class taxonomy
-    today. Only drift-vs-stored-tare detection is live.
+    rapid-tare-change alerts are not yet implemented. TruLoad has no vehicle-class taxonomy
+    today, so only drift-vs-stored-tare detection is live.
 
 ## Tare Approval Workflow
 
@@ -87,7 +87,7 @@ When drift detection flags a tare value:
 
 1. The flagged entry appears in **Weighing > Tare Register > Pending Review**, showing the vehicle, the drift reason, and when it was flagged. The underlying transaction/tare entry is unaffected and continues normally.
 2. A supervisor with `weighing.override` reviews the flagged value and either:
-    - **Approves** -- clears the flag, the recorded tare stands as-is
-    - **Rejects** -- clears the flag with a reason; the recorded tare is **not** retroactively changed (re-verify the vehicle on its next visit)
-    - **Overrides** -- enters a corrected tare weight with a required justification; this updates the vehicle's stored tare going forward but does not rewrite an already-completed transaction's weights or fees
-3. All decisions are recorded (`TareAnomalyResolution` + resolver + timestamp).
+    - **Approves**: clears the flag, and the recorded tare stands as is
+    - **Rejects**: clears the flag with a reason. The recorded tare is not retroactively changed, so re-verify the vehicle on its next visit.
+    - **Overrides**: enters a corrected tare weight with a required justification. This updates the vehicle's stored tare going forward but does not rewrite an already-completed transaction's weights or fees.
+3. All decisions are recorded (`TareAnomalyResolution`, resolver, and timestamp).

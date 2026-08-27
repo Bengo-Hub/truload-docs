@@ -124,7 +124,7 @@ An interim PDF is available after the first pass for use as a delivery receipt. 
 ### Thermal printer
 
 !!! warning "Not yet built"
-    80mm thermal ticket printing is planned but not implemented today — only the A4 PDF above is
+    80mm thermal ticket printing is planned but not implemented today. Only the A4 PDF above is
     available. A station's **Printer Configuration** (see [Station Configuration](setup.md#station-configuration))
     is metadata-only for now and does not drive an actual print job.
 
@@ -178,7 +178,7 @@ The ticket adapts based on how the weight was captured:
 
 The scale type is set automatically based on which weighing page was used: `/weighing/multideck` for
 multideck, `/weighing/mobile` for mobile. `/weighing` itself is a hub page (Operations + Tickets)
-that routes an operator into one of those two capture flows — there is no separate standalone
+that routes an operator into one of those two capture flows. There is no separate standalone
 capture stepper for a plain static scale today. **Standard (static)** ticket rendering (combined
 weight only, no deck breakdown) is the fallback shown whenever a transaction has no multideck/mobile
 scale-type tag at all, e.g. one created without going through either dedicated capture flow.

@@ -68,13 +68,13 @@ Navigate to **Setup > Weighing Metadata > Cargo Types**:
 | **Code** | Short code for tickets and reports (e.g., `MZ`, `CM`, `BL`) |
 | **Moisture target %** | Target moisture content for deduction calculation |
 | **Foreign matter limit %** | Threshold above which foreign matter deductions apply |
-| **This organisation only** | When checked, this cargo type is only visible/usable within your organisation. Unchecked (default) makes it a shared entry visible to every tenant on the platform — this is how every pre-existing cargo type behaves today. |
+| **This organisation only** | When checked, this cargo type is only visible and usable within your organisation. Unchecked (default) makes it a shared entry visible to every tenant on the platform, which is how every pre-existing cargo type behaves today. |
 | **Active** | Enable/disable the cargo type |
 
 !!! info "Tolerance override lives on the Tolerances page, not here"
     There is no tolerance field on the Cargo Type form itself. To override the global tolerance
     for a specific commodity, create a rule scoped to that cargo type on
-    **[Setup > Tolerances](#tolerance-settings)** — see [Tolerance Settings](#tolerance-settings)
+    **[Setup > Tolerances](#tolerance-settings)**. See [Tolerance Settings](#tolerance-settings)
     above for the exact fields.
 
 ### Adding a new cargo type
@@ -94,7 +94,7 @@ Origins and destinations are used for logistics tracking and reporting. They app
 Navigate to **Setup > Weighing Metadata > Origins/Dest.**:
 
 1. Click **Add Location**.
-2. Enter the name, code, country, and location type — this describes the *kind* of place (city, town, port, border crossing, warehouse), not whether it's used as an origin or a destination. The same location can be selected as either an origin or a destination during capture; there is no separate origin/destination role flag.
+2. Enter the name, code, country, and location type. This describes the *kind* of place (city, town, port, border crossing, warehouse), not whether it's used as an origin or a destination. The same location can be selected as either an origin or a destination during capture; there is no separate origin/destination role flag.
 3. Check **This organisation only** if this location should not be visible to other tenants (default: shared/global, same convention as Cargo Types above).
 4. Click **Save**.
 
@@ -107,9 +107,9 @@ Drivers and transporters are pre-registered for fast lookup during weighing capt
 
 Navigate to **Setup > Weighing Metadata**:
 
-- **Transporters** tab — add hauling companies with contact details and portal email (for transporter portal access)
-- **Drivers** tab — add drivers with licence number and expiry date
-- **Vehicles** tab — register vehicle plates with default tare weight and tare expiry override
+- **Transporters** tab: add hauling companies with contact details and portal email (for transporter portal access)
+- **Drivers** tab: add drivers with licence number and expiry date
+- **Vehicles** tab: register vehicle plates with default tare weight and tare expiry override
 
 ## Station Configuration
 
@@ -121,8 +121,8 @@ Each station (physical weighbridge site) has its own configuration. Navigate to 
 | **Station code** | Short code for ticket numbering |
 | **Address** | Physical location |
 | **Operating hours** | Define shift boundaries (start/end time) |
-| **Default weighing mode** | `Enforcement` or `Commercial` — **informational/reporting only**. The mode a station actually operates in is still determined by your organisation's tenant type; this field does not change routing behaviour. |
-| **Printer configuration** | Free-text/JSON printer details (name, model, connection) — **metadata only today**; TruLoad does not yet drive an 80mm thermal printer directly from this configuration (see [Weight Tickets > Printing](weight-tickets.md#printing)) |
+| **Default weighing mode** | `Enforcement` or `Commercial`, **informational and for reporting only**. The mode a station actually operates in is still determined by your organisation's tenant type; this field does not change routing behaviour. |
+| **Printer configuration** | Free-text/JSON printer details (name, model, connection), **metadata only today**. TruLoad does not yet drive an 80mm thermal printer directly from this configuration (see [Weight Tickets > Printing](weight-tickets.md#printing)) |
 | **Ticket template** | Free-text label for the ticket layout you intend this station to use (commercial or enforcement format) |
 
 ## Quality Deduction Rules

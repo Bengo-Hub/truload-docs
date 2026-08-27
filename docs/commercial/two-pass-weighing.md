@@ -31,7 +31,7 @@ This is the most common pattern for **receiving** goods. The loaded vehicle arri
 ### Step-by-step
 
 1. **Open the Weighing module** and confirm the station and shift are active.
-2. **Start a new transaction** and choose **Gross** as the first weight type (there is no separate "Inbound/Outbound" toggle — the direction is expressed entirely by which weight you capture first).
+2. **Start a new transaction** and choose **Gross** as the first weight type. There is no separate "Inbound/Outbound" toggle; the direction is expressed entirely by which weight you capture first.
 3. **Enter vehicle details**:
     - Registration number (plate)
     - Transporter name (auto-populated if the vehicle is registered)
@@ -100,11 +100,11 @@ flowchart LR
 | `Pending` | Transaction created, no weight captured yet |
 | `FirstWeightCaptured` | First pass captured, awaiting second pass |
 | `Complete` | Both passes captured, net weight calculated |
-| `ToleranceExceeded` | Net discrepancy beyond the configured tolerance — needs supervisor approval before the ticket can be finalised |
+| `ToleranceExceeded` | Net discrepancy beyond the configured tolerance, needs supervisor approval before the ticket can be finalised |
 | `Voided` | Transaction cancelled before completion |
 
 These match the ticket status badge described in [Weight Tickets](weight-tickets.md#ticket-status)
-exactly — there is a single set of transaction states used throughout the commercial module.
+exactly. There is a single set of transaction states used throughout the commercial module.
 
 ## Resume Flow (Returning Vehicle)
 
