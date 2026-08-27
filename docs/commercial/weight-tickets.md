@@ -123,10 +123,32 @@ An interim PDF is available after the first pass for use as a delivery receipt. 
 
 ### Thermal printer
 
-!!! warning "Not yet built"
-    80mm thermal ticket printing is planned but not implemented today. Only the A4 PDF above is
-    available. A station's **Printer Configuration** (see [Station Configuration](setup.md#station-configuration))
-    is metadata-only for now and does not drive an actual print job.
+Click **Print Thermal**, next to **Print Ticket**, in the ticket detail drawer or on the final
+step of the capture flow. TruLoad generates a raw byte file formatted for an 80mm thermal
+receipt printer and downloads it to the operator's computer. The same button covers both the
+interim ticket (available after the first pass) and the final ticket (available after the
+second pass), matching the PDF above: a tolerance-exceeded transaction blocks the final
+thermal ticket the same way it blocks the final PDF, until a supervisor approves or rejects
+the exception.
+
+The downloaded file contains standard ESC/POS printer commands: initialize, text alignment,
+bold, double-size, and paper cut, laid out as a compact single-column receipt (48 characters
+wide) with station name, ticket number, vehicle registration, transporter, the tare/gross/net/
+adjusted-net weight summary with tare source, status, timestamp, and the billing line when a
+weighing fee is configured. This is the same command language used by most 80mm receipt
+printers, so the file is not tied to a specific printer brand.
+
+TruLoad does not detect or talk to a printer automatically. There is no print-bridge or local
+agent for this yet, unlike TruConnect for scale readings. Delivering the file to paper is up to
+the operator's own printer setup: most thermal printers can be installed in Windows as a
+generic/raw printer, and sending the downloaded file to that printer queue prints it as-is. A
+station's **Printer Configuration** field (see [Station Configuration](setup.md#station-configuration))
+stays metadata only. It documents what printer a station uses but does not select or drive
+the print job.
+
+The ESC/POS command bytes follow the published spec and were checked by hand against the
+documented values, but they have not been tested on a physical thermal printer. Treat the
+output as unverified until someone confirms it prints correctly on real hardware.
 
 ## Searching and Filtering Tickets
 
