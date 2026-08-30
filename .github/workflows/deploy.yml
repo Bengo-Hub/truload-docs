@@ -349,7 +349,15 @@ jobs:
           tag = "${{ needs.build-image.outputs.image_tag }}"
           with open("$FILE") as f:
               src = f.read()
-          new = re.sub(r"(\n\s*tag:\s*)\S+", rf"\g<1>{tag}", src, count=1)
+          # Always emit a QUOTED scalar. An unquoted all-numeric short SHA (e.g. 69086443) is
+          # valid YAML for a bare tag but parses as a number, which Helm/the chart then renders
+          # in scientific notation (6.9086443e+07) -> InvalidImageName. This bit the exact same
+          # tag field before (see git log: 37768722 -> 3.7768722e+07) and was "fixed" only by
+          # hand-requoting the value after the fact -- that fix didn't touch this substitution,
+          # so it silently regressed the next time a short SHA happened to be all digits. Always
+          # quoting here, regardless of what the previous value looked like, makes this immune to
+          # the SHA's content instead of relying on it "usually" starting with a letter.
+          new = re.sub(r'(\n\s*tag:\s*)\S+', rf'\g<1>"{tag}"', src, count=1)
           with open("$FILE", "w") as f:
               f.write(new)
           PY
