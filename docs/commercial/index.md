@@ -12,6 +12,16 @@ TruLoad's commercial weighing module serves private-sector operations where accu
 | **Agriculture** | Harvest intake weighing, moisture/quality deductions on tickets |
 | **Waste Management** | Tipping-fee calculation based on net weight per disposal run |
 
+These industries are now a real, settable classification, not just marketing copy. A commercial
+tenant can pick its vertical (Waste Management, Quarry, Factory, Logistics, Agriculture, or
+General) on the "Industry / Vertical" dropdown at organisation creation, which the backend stores
+under the organisation's metadata and uses to apply a default module preset. An unclassified
+organisation (every commercial tenant created before this feature, and any tenant whose admin
+skips the dropdown) behaves exactly as before - the classification is optional and additive, not a
+prerequisite for using the platform. See [Setup & Configuration](setup.md) and the
+[architecture conventions](../technical/MULTI_TENANCY.md#tenant-attribute-storage-narrow-column-vs-metadata-json)
+doc for how it's stored.
+
 ## Key Features
 
 - **Two-pass weighing** -- gross and tare captured separately; net weight calculated automatically

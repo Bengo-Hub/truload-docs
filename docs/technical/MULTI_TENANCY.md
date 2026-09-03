@@ -149,6 +149,24 @@ The key is invalidated automatically by `SubscriptionCacheInvalidationService` (
 
 ---
 
+## Tenant Attribute Storage: Narrow Column vs Metadata JSON
+
+`Organization` has both patterns, deliberately. A real binary switch that's queried at many call
+sites - `TenantType`, `WeighingBusinessModel`, `BillingMode`, `IsDemo` - earns a dedicated typed
+column, because it's cheap to index/filter on and every call site benefits from compile-time typing.
+A small, one-off tenant attribute that's read in exactly one place doesn't clear that bar, so it goes
+into `Organization.MetadataJson` instead - a single nullable `jsonb` "bag" column, read/written
+through the typed `OrganizationMetadataHelper` (constants for known keys + get/merge functions), the
+same shape already proven by `WeighingTransaction.IndustryMetadata` /
+`CommercialWeighingService.MergeIndustryMetadata` at the transaction level. The commercial
+vertical/sub-use-case classification (`"vertical"` key, see `CommercialVerticals`) is the first
+consumer: it's read once, when resolving an org's default enabled modules and its report catalog,
+so a new nullable column - and a new EF migration - for it would have been overkill. The next small
+tenant attribute in this or another service should default to this pattern (a documented key under
+an existing metadata column) rather than a new narrow column, unless it turns out to need the same
+call-site-heavy, indexable treatment `TenantType` gets - in which case a dedicated column is still
+the right call, same as it was for `TenantType` itself.
+
 ## Background Jobs and Tenant Context
 
 Background jobs (Hangfire) have no HTTP request context and therefore no `ITenantContext`. Services called from background jobs must either:
