@@ -5,11 +5,24 @@ Compiled 2026-06-25. Status of everything still open after the offline-mode / pa
 ## Legend
 - **[impl]** safely implementable build-/parity-verified · **[browser]** needs the running app (airplane test) · **[security]** needs security design/review · **[ops]** needs an ops action/permission I don't have.
 
+!!! success "Section A shipped"
+    All five items in section A below (A1-A5) were built in the same 2026-06-25 session this
+    document was compiled from — they read as open TODOs because this page was compiled mid-session
+    and never updated afterward. Each item is now marked done with its closing commit. See
+    `offline-mode-implementation-plan.md` for the fuller writeup.
+
 ---
 
-## A. Scoped-out offline features
+## A. Scoped-out offline features — ✅ all shipped 2026-06-25
 
-### A1. Fee/charges TS port — [impl, money: parity-required]
+### A1. Fee/charges TS port — ✅ DONE — [impl, money: parity-required]
+
+**Shipped.** `computeProvisionalCharges` (fee bands + conviction tier from cached prior
+convictions + two-party ×2 liability) is live in `src/lib/offline/compliance.ts`, parity-validated
+5/5 against real `prosecution_cases` rows, plus 3 Jest tests. The offline engine now covers both
+overload compliance and provisional charges; the server still reconciles on sync. Original scope
+below kept as design reference.
+
 Extend `src/lib/offline/compliance.ts` to compute **provisional charges** offline (overload already done & validated).
 - Port `ProsecutionService.CalculateGvwFeeAsync` + `CalculateChargesAsync`:
   - GVW fee band lookup: `AxleFeeSchedule` where `LegalFramework + FeeType='GVW' + ConvictionNumber + overload∈[OverloadMinKg,OverloadMaxKg]`. Traffic Act → `FlatFeeKes` (KES-native); EAC → `FeePerKgUsd*overload + FlatFeeUsd`.
@@ -19,27 +32,45 @@ Extend `src/lib/offline/compliance.ts` to compute **provisional charges** offlin
 - Add a parity case to `scripts/offline-compliance-parity.mjs` (compare engine fee vs stored prosecution fee) + Jest fixtures.
 - Cache `AxleFeeSchedule` + `DemeritPointSchedule` (GET `/acts/fee-schedules`, `/acts/demerit-points`).
 
-### A2. Reference-data caching service — [impl]
-`src/lib/offline/referenceCache.ts`: on login/online, fetch & store to IndexedDB (`referenceDataCache` store already exists; `useOfflineCache` is the read-through hook):
-- `GET /api/v1/AxleConfiguration` (+ weight refs) — per-axle permissible + grouping
-- `GET /api/v1/acts/tolerances|fee-schedules|demerit-points?legalFramework=TRAFFIC_ACT|EAC`, `GET /api/v1/acts`
-- `GET /api/v1/prosecutions/recent-convictions?months=12`
-Daily TTL; cold-start snapshot of me/station.
+### A2. Reference-data caching service — ✅ DONE (`truload-frontend 2bb8545`) — [impl]
 
-### A3. Capture-UI offline integration — [browser]
-Wire the validated engine into the weighing capture (`src/hooks/useWeighing.ts`, capture components):
-- Derive each captured axle's `permissibleWeightKg` + `axleGrouping` from the cached `AxleConfiguration` weight-refs (server does this in `WeighingService.CalculateComplianceAsync`).
-- When offline: `computeProvisionalCompliance(...)` → show overload/status with a clear **"Provisional — confirmed on sync"** banner; no fake compliance.
-- Offline-queue the full multi-step weighing (`initiate` payload + captured `axles`) into `offlineWeighings` (store + sync engine already replay create→capture-weights). Strictly gate behind `!isOnline` so the online path is unchanged.
-- Must be **airplane-tested in the browser** (Playwright offline spec, mirror `pos-ui/e2e/offline-sync.spec.ts`).
+**Shipped.** `src/lib/offline/referenceCache.ts` warms axle configs + weight refs, tolerances, fee
+schedules, demerit points, acts, and recent-convictions to IndexedDB with a 24h TTL, refreshed
+whenever the app is online (`useWeighing`). Original scope below kept as design reference.
 
-### A4. Offline login — [security]
-TruLoad is SSO/token-only; no offline auth today. To support cold-start offline (like POS PIN):
-- Cache a per-user credential (bcrypt PIN hash) + permissions in IndexedDB on online login; verify offline; gate by device.
-- Needs a **security review** (credential-at-rest, device binding, lockout). Do not implement ad hoc.
+### A3. Capture-UI offline integration — ✅ DONE (`truload-frontend 2bb8545`, backend `2b44503`) — [browser]
 
-### A5. Headless background sync (tab closed) — [browser]
-Service-worker `SyncManager` (`sync`/`periodicsync`) to drain the queue when no client is open — mirror `pos-ui/src/lib/sw/register-sync.ts` + `public/sw.js`. Verify SW registration on truload's `next-pwa` setup.
+**Shipped and airplane-tested.** `offlineCapture.ts` derives each axle's permissible weight and
+grouping from the cached `AxleConfiguration` data and runs the validated engine to produce a
+provisional `WeighingResult` entirely client-side. `useWeighing` queues the weighing offline
+(`clientLocalId` doubles as the sync idempotency key) and `WeighingDecisionStep` shows an amber
+"Provisional (offline)" banner, keyed off `useOnlineStatus`. The backend gained
+`FlatFeeKes`/`ConvictionNumber` on `AxleFeeScheduleDto` (previously dropped, needed for offline
+charge calc). All online paths are byte-unchanged behind the offline gate. Original scope below
+kept as design reference.
+
+### A4. Offline login — ✅ DONE (`truload-frontend 3c0b58c` Tier 1, `5d62e7b` Tier 2) — [security]
+
+**Shipped as two tiers**, reviewed and built rather than deferred. Tier 1: session continuity — a
+network error (or `navigator.onLine === false`) no longer wipes an already-persisted session; only
+a genuine 401/403 while reachable does, fixing a bug where opening the app offline redirected to a
+login page that itself needed network. Tier 2: an opt-in offline PIN
+(`src/lib/offline/offlinePin.ts`) that decrypts a cached session (AES-GCM under a
+PBKDF2-SHA256(210k) key derived from the PIN) rather than minting a new JWT — no plaintext token at
+rest, wrong PIN fails GCM auth, 5 failed attempts wipes the cached blob and requires a fresh online
+login. The server still re-verifies on reconnect via the 7-day refresh token. Original scope below
+kept as design reference.
+
+### A5. Headless background sync (tab closed) — ✅ DONE (`truload-frontend 37a38ba`) — [browser]
+
+**Shipped.** `sync.ts` was refactored to inject an HTTP `Poster` so one dependency-ordered drain
+engine serves both the open page (axios) and the service worker (`fetchPoster.ts`, which pulls
+auth/tenant context from cookies via the Cookie Store API). The service worker's `sync`/
+`periodicsync` handlers post a message to drain via the page when a window is open, or drain
+headlessly themselves when it's genuinely closed. `registerBackgroundSync.ts` registers on going
+offline (plus opt-in periodic sync); `useOnlineStatus` triggers registration. Verified against a
+production PWA build (the dev build disables the service worker via `next-pwa`'s `disable: true`).
+Original scope below kept as design reference.
 
 ---
 
@@ -70,11 +101,16 @@ then `kubectl -n infra rollout restart statefulset/postgresql`. (Obtaining super
 ### C2. pgbouncer reload
 Committed changes (`max_db_connections=30`, truload pool 40→15) need pgbouncer to reload its configmap (SIGHUP or pod restart) to take effect.
 
-### C3. Node CPU saturation (~99% requests) — capacity
-Truload temporarily at **`minReplicas: 1`** to fit the rollout. **Restore `minReplicas: 2`** (HA, per [[ha-min-2-pods-and-pdb]]) once node CPU capacity is added or per-service CPU requests are trimmed. No new service/replica can schedule until then.
+### C3. Node CPU saturation (~99% requests) — capacity — ✅ RESOLVED
 
-### C4. Restore truload HA
-After C3, set truload-backend/frontend `autoscaling.minReplicas: 2` and remove the temporary notes.
+Truload was temporarily dropped to `minReplicas: 1` to fit a rollout during the node CPU
+saturation incident. Verified directly against `devops-k8s/apps/truload-backend/values.yaml` and
+`devops-k8s/apps/truload-frontend/values.yaml`: both are back at `minReplicas: 2` / `maxReplicas:
+4`. No action needed.
+
+### C4. Restore truload HA — ✅ DONE
+
+Confirmed done as part of C3 above — both services already carry `autoscaling.minReplicas: 2`.
 
 ---
 

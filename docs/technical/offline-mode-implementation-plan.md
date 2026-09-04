@@ -1,6 +1,16 @@
 # TruLoad Offline Mode — Implementation Plan
 
-Status: **Proposed (awaiting approval)** · Author: engineering · Scope: `truload-frontend` + `truload-backend`
+Status: **Shipped (2026-06-25)** · Author: engineering · Scope: `truload-frontend` + `truload-backend`
+
+!!! success "Built, not just planned"
+    Every phase below, including the two items originally listed as out of scope (offline login and
+    background sync), shipped in a single 2026-06-25 session. The phase breakdown, file list, and
+    design rationale below are kept as-written because they're still an accurate description of what
+    was built — only the status/scope framing in this note and the "Out of scope" section further
+    down have been corrected. See [Shipped scope](#shipped-scope-corrected-2026-06-25) for what
+    actually landed and its commit references, and
+    [TruConnect's separate offline system](#this-vs-truconnects-sqlite-offline-system) for how this
+    fits alongside the other TruLoad offline mechanism.
 
 ## Goal
 
@@ -77,11 +87,53 @@ Rewrite `truload-frontend/src/lib/offline/sync.ts` from a generic queue into a t
 - E2E: airplane-mode run through weigh → case → prosecute → invoice; reconnect; assert exactly one of each on the server (DB counts) and correct linkage.
 - Per the team rule, **delete all E2E test data** across affected DBs/streams afterward.
 
-## Out of scope (explicitly deferred)
+## Out of scope as originally planned — since shipped
 
-- **Offline login.** TruLoad auth is SSO/token-only (no cached PIN like POS). Offline requires a prior online session to hold tokens; a PIN-based cold-start offline login is a separate effort.
-- Headless sync while the tab is closed.
-- Offline **payment** capture beyond what the existing receipt idempotency already allows (eCitizen/Pesaflow checkout is inherently online).
+This section is kept for its original design reasoning, but both items below were built in the
+same 2026-06-25 session as everything else on this page. Neither is actually out of scope today.
+
+- **Offline login.** Originally deferred because TruLoad auth is SSO/token-only (no cached PIN like
+  POS) and offline requires a prior online session to hold tokens. Shipped as two tiers: Tier 1,
+  session continuity (don't wipe an already-persisted session on a network error, only on a genuine
+  401/403 while reachable); Tier 2, an opt-in offline PIN that decrypts a cached session
+  (AES-GCM under a PBKDF2-SHA256 key derived from the PIN) rather than minting a new JWT — the PIN
+  never authenticates by itself, and 5 wrong attempts wipes the cached blob.
+- **Headless sync while the tab is closed.** Originally deferred; shipped via the Background Sync
+  API. If an app window is open when connectivity returns, the service worker posts a message so
+  the page drains the queue with the already-tested axios engine; if the app is genuinely closed,
+  the service worker drains it itself via a fetch-based poster that pulls auth/tenant context from
+  cookies.
+- Offline **payment** capture beyond what the existing receipt idempotency already allows
+  (eCitizen/Pesaflow checkout is inherently online) remains genuinely out of scope — this one was
+  not built and is not planned.
+
+## Shipped scope (corrected 2026-06-25)
+
+| Area | What shipped | Commit(s) |
+|---|---|---|
+| Phase 1 — backend idempotency | Weighing create reuses the existing `ClientLocalId` get-or-create (no migration needed); case-from-weighing and prosecution-from-case converted from throw-on-duplicate to get-or-create; invoice/receipt were already idempotent | `truload-backend b04a11b`/`d1046fd`/`5cf6e16` |
+| Phase 2/3 — Dexie stores + sync engine | Dexie v3 workflow stores (`offlineWeighings`/`offlineCases`/`offlineProsecutions`/`offlineInvoices`/reference cache) + a dependency-ordered, idempotent sync engine (`Idempotency-Key` headers, exponential backoff with jitter, dead-letter) in `src/lib/offline/{db,sync}.ts` | `truload-frontend 40b43d2` |
+| Phase 4 — capture-UI integration | `referenceCache.ts` warms axle configs/weight refs/tolerances/fee schedules/demerit/acts/recent-convictions to IndexedDB; `offlineCapture.ts` runs a faithful, parity-validated port of the compliance engine (`compliance.ts`, 30/30 against real weighings) to produce a provisional `WeighingResult` entirely client-side; `useWeighing` queues the weighing offline and shows a "Provisional (offline)" banner; server reconciles on sync | `truload-frontend 2bb8545`, `truload-backend 2b44503` |
+| Offline login | Tier 1 (session continuity) + Tier 2 (encrypted offline PIN) — see above | `truload-frontend 3c0b58c`, `truload-frontend 5d62e7b` |
+| Background sync | Background Sync API wiring so the queue drains even with the app closed — see above | `truload-frontend 37a38ba` |
+| Verification | Jest (12/12 offline unit tests) + Playwright `e2e/api-idempotency.spec.ts` against the live API, self-cleaning (creates then hard-deletes its own weighing+case) | `truload-frontend` (same commits above) |
+
+## This vs. TruConnect's SQLite offline system
+
+TruLoad has **two** separate offline mechanisms, built for two different deployment shapes. Both
+solve "keep working when the network drops," but neither replaces the other:
+
+| | This page (frontend PWA) | TruConnect's offline queue |
+|---|---|---|
+| Runs on | The browser, via IndexedDB (Dexie) + a service worker | The TruConnect Windows bridge, via a local SQLite `weighing_queue` table |
+| Deployment shape | A browser-connected site with a `truload-frontend` install | A frontend-less site (TruConnect posts straight to `truload-backend`, no browser involved) |
+| Covers | Full enforcement chain: weighing → case → prosecution → invoice | Weighing capture only (`autoweigh`/`complete`), dependency-chained |
+| Built | June 2026, this initiative | A separate, later initiative (TruConnect Phase 3/4) — see that initiative's plan file for its own verification record |
+
+If you're building for a site that has a local frontend install, this page's mechanism applies. If
+you're building for a frontend-less TruConnect-only deployment, see
+[Architecture](architecture.md#components) and TruConnect's own `src/backend/` module
+(`SyncQueue.js`, `ConfigSyncService.js`) instead.
 
 ## Sequencing & PRs
 
