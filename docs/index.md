@@ -44,8 +44,10 @@
 
 `TruConnect`
 : Windows desktop bridge. Reads the physical scale over serial, TCP,
-  UDP, or HTTP and streams weights to the browser over a local WebSocket.
-  Distributed as a signed Windows installer.
+  UDP, or HTTP. At a site with a local frontend install, it streams weights to the operator's
+  browser over a local WebSocket. At a frontend-less site, it posts weighings directly to
+  `truload-backend`'s API instead, with a durable local SQLite queue so captures survive an
+  offline stretch. Distributed as a signed Windows installer.
 
 `Transporter Portal`
 : Self-service web interface for transporters and haulers. Cross-tenant
