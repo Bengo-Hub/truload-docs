@@ -9,12 +9,36 @@ Navigate to **Setup > Settings > Commercial** to configure organisation-wide com
 | Setting | Description | Default |
 |---------|-------------|---------|
 | **Weighing Business Model** | `Third-Party Weighbridge` (charges transporters per transaction) or `Facility-Owned Scale` (no per-transaction fee, internal use only) | — |
-| **Weighing fee (KES)** | Per-transaction fee charged for commercial weighing. Only applies when model is `Third-Party Weighbridge`. Leave at 0 for facility-owned scales. | — |
+| **Weighing fee (KES)** | Fallback per-transaction fee, used only when no tariff rule (see below) matches a weighing. Only applies when model is `Third-Party Weighbridge`. Leave at 0 for facility-owned scales. | — |
 | **Default tare expiry (days)** | Number of days a stored tare weight remains valid before re-verification is required | 90 |
 | **Payment gateway** | Integrated payment provider (read-only; configured by platform admin) | — |
 
 !!! info "Business model"
     Set the **Weighing Business Model** before going live. When set to `Facility-Owned Scale`, the system skips invoice creation and payment collection for every transaction. See [Business Models](business-models.md) for a full comparison.
+
+## Tariff Rules
+
+Navigate to **Setup > Tariffs** to configure how commercial weighing fees are calculated. This is
+the primary billing mechanism for `Third-Party Weighbridge` organisations — the flat **Weighing
+fee (KES)** above only applies when a weighing matches no tariff rule.
+
+Each rule has:
+
+| Field | Description |
+|-------|-------------|
+| **Label** | Optional display name, e.g. "Heavy trucks (5+ axles)" or "Acme Transporters contract rate" |
+| **Transporter Contract Rate** | Optional. When set, the rule applies only to that transporter's weighings and ignores the bracket fields below. Takes priority over every bracket rule. |
+| **Vehicle Type / Min-Max Axle Count / Min-Max Gross Weight (kg)** | Optional bracket-matching fields, used when no transporter is selected. Leave any field blank to match any value; the most specific matching bracket wins. |
+| **Fee (KES)** | The amount, interpreted according to Rate Basis below |
+| **Rate Basis** | `Per tonne` (fee × net weight in tonnes — the default), `Per kg` (fee × net weight in kg), or `Flat fee` (a fixed amount per matching weighing) |
+| **Invoiced** | `Per transaction` (invoice immediately on completion — the original behaviour) or `Daily`/`Weekly`/`Monthly` (roll every matching weighing in that period into one invoice) |
+
+Resolution order for a completed weighing: a matching transporter contract rule always wins;
+otherwise the most specific matching bracket rule applies; if nothing matches, the organisation's
+flat Weighing fee (KES) applies. Rules with a non-immediate billing period don't invoice right
+away — they accrue, and the `commercial-periodic-billing` background job (see
+[Background Jobs](../technical/BACKGROUND_JOBS.md)) rolls up every accrual for the same
+organisation, transporter, and period into one invoice once that period has fully elapsed.
 
 !!! info "Tare expiry"
     When a stored tare expires, the system prevents single-pass operations on the affected vehicle and prompts the operator to capture a fresh tare weight. The tare expiry period can be overridden per vehicle in the tare register.

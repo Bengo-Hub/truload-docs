@@ -23,17 +23,43 @@ flowchart LR
 
 | Attribute | Value |
 |-----------|-------|
-| **Weighing fee** | Charged per completed transaction |
-| **Invoice** | Generated automatically on second-weight capture |
+| **Weighing fee** | Charged per completed transaction, using the tariff rule system described below |
+| **Invoice** | Generated automatically once a rule's billing period elapses (immediately, or rolled up daily/weekly/monthly) |
 | **Payment gateway** | Treasury or direct payment at weighbridge |
 | **Transporter portal** | Fully applicable — transporters access their own records |
 | **Platform subscription** | Charged to the weighbridge operator |
 
+### How the weighing fee is actually determined: tariff rules
+
+The flat **Weighing Fee (KES)** under Setup > Settings > Commercial is a zero-config fallback, not
+the primary mechanism. Most Model 1 operators instead define one or more **tariff rules** on
+**Setup > Tariffs**, each specifying:
+
+- **Scope** — either a specific transporter's contract rate, or a bracket matched by vehicle type,
+  axle count range, and/or gross weight range. A transporter contract rule always wins over any
+  bracket rule; among bracket rules, the most specific match wins.
+- **Rate basis** — how the fee amount is applied: `PerTonne` (fee × net weight in tonnes — the
+  default for new rules, since most commercial tenants bill by tonnage), `PerKg` (fee × net weight
+  in kg), or `Flat` (a fixed amount per matching weighing, regardless of tonnage).
+- **Billing period** — when the fee is actually invoiced: `Immediate` (one invoice per weighing,
+  right when it completes — the original behaviour) or `Daily`/`Weekly`/`Monthly` (the fee accrues
+  instead, and every accrual for the same organisation, transporter, and period is rolled into ONE
+  invoice once that period elapses — e.g. a client who settles with a transporter monthly on
+  aggregated tonnage).
+
+When a weighing matches no tariff rule, the organisation's flat `CommercialWeighingFeeKes` value
+applies instead, exactly as before — this keeps existing, unclassified organisations behaving
+identically to prior versions of TruLoad.
+
 ### Configuration
 
-1. Navigate to **Setup > Settings > Commercial**.
-2. Set **Weighing Business Model** to `Third-Party Weighbridge`.
-3. Enter the **Weighing Fee (KES)** — this is charged to the transporter per completed weighing.
+1. Navigate to **Setup > Tariffs** to define one or more tariff rules (label, scope, fee, rate
+   basis, and billing period) — see above.
+2. Navigate to **Setup > Settings > Commercial** and set **Weighing Business Model** to
+   `Third-Party Weighbridge`.
+3. Enter the **Weighing Fee (KES)** — the fallback amount charged when no tariff rule matches a
+   weighing. Set this even if you configure tariff rules, so unmatched weighings are never billed
+   at zero unintentionally.
 4. The **Payment Gateway** is configured by the platform administrator.
 
 ### Who uses this model
