@@ -75,11 +75,15 @@ TruLoad monitors tare weights for drift that may indicate a data quality issue:
 | Anomaly | Detection Rule | Action |
 |---------|---------------|--------|
 | **Tare drift** | New measured tare differs from the vehicle's prior stored tare by more than the configured threshold (**Setup > Settings > Weighing > Tare Drift Anomaly Threshold %**, default 5%) | The transaction (or standalone tare-register entry) is flagged for supervisor review. The capture itself is **not blocked**; flagging is informational and runs alongside the normal workflow |
+| **Vehicle-class range** | New tare falls outside the mean ± 2 standard deviations of the last recorded tares for vehicles sharing this vehicle's axle configuration. Requires at least 10 historical readings for that configuration — with fewer, the sample is too thin to be statistically meaningful and the check is skipped rather than risk false positives | Same as tare drift: flagged for supervisor review, capture is not blocked |
+| **Rapid tare change** | The vehicle has accumulated 3 or more tare re-measurements within a trailing 24-hour window (both configurable — **Setup > Settings > Weighing**) | Same as above — flagged for review, not blocked |
+
+All three rules run independently and can all fire on the same reading; the Pending Review reason
+field lists every rule that triggered.
 
 !!! note "Scope"
-    Vehicle-class-based range checks ("unusually high/low tare for this vehicle class") and
-    rapid-tare-change alerts are not yet implemented. TruLoad has no vehicle-class taxonomy
-    today, so only drift-vs-stored-tare detection is live.
+    All three checks share the single **Pending Review** queue and reason field described below —
+    there's no separate view per anomaly type.
 
 ## Tare Approval Workflow
 

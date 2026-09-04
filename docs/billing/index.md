@@ -14,7 +14,7 @@ The platform subscription covers access to TruLoad for the organisation as a who
 
 ### Viewing Your Subscription
 
-Navigate to **Setup > Billing** to see:
+Navigate to **Billing & Plans** (top-level sidebar item, not under Setup) to see:
 
 - Current plan name and status
 - Renewal date and payment history
@@ -33,7 +33,7 @@ Navigate to **Setup > Billing** to see:
 
 ## Changing Plans
 
-1. Navigate to **Setup > Billing**.
+1. Navigate to **Billing & Plans**.
 2. Click **Change Plan**.
 3. Select the new plan from the list.
 4. Upgrades take effect immediately (prorated charge applied).
@@ -47,7 +47,7 @@ Navigate to **Setup > Billing** to see:
 | M-PESA paybill | :material-check: |
 | Bank transfer | :material-check: |
 
-Invoices are generated automatically and available under **Setup > Billing > History**.
+Invoices are generated automatically and available under **Billing & Plans > Billing History**.
 
 Payment reminders are sent 3 days before the due date.
 
