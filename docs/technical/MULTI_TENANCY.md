@@ -85,6 +85,19 @@ foreach (var (slug, tenantCs) in tenantConnProvider.GetDedicatedTenantDatabases(
 
 A failed tenant DB migration logs the error and continues — it does not block the whole application startup.
 
+!!! danger "This is not as safe as it sounds"
+    A swallowed migration failure leaves the pod reporting healthy while the schema underneath it is
+    NOT updated. Worse, because EF applies migrations as one ordered batch, the failure also blocks
+    every later migration and every seeder queued after it in the same startup run — not just the
+    one migration that failed. The health check only proves the app booted; it does not prove the
+    schema is current. This was a real incident, not a hypothetical: see the commercial-weighing
+    audit initiative's "CRITICAL PATH" section, Blocker 1 — a table ownership mismatch
+    (`commercial_tariff_rules` owned by the wrong Postgres role) made one migration fail on the
+    shared `truload` database, which silently blocked every migration and seeder after it, while CI
+    and the live health check both stayed green. Confirming a deploy actually landed requires a
+    direct query against `__EFMigrationsHistory` (or the target table/column itself) — a green
+    health check alone does not prove it.
+
 ## Row-Level Security (Shared Database)
 
 For shared-database tenants, isolation is enforced at the ORM level. All models inheriting from `TenantAwareEntity` carry an `OrganisationId` foreign key. EF Core global query filters ensure tenants never see each other's data:
