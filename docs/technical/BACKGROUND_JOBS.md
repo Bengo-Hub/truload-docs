@@ -17,6 +17,7 @@ The Hangfire dashboard is accessible at `/hangfire` (admin cookie authentication
 | `report-schedule-runner` | `ReportScheduleJob` | `*/5 * * * *` | `default` | 3 | Runs any scheduled report definitions that are due |
 | `stale-weighing-alert` | `StaleWeighingNotificationJob` | `*/30 * * * *` | `default` | 3 | Emails station managers about open first-weight-only transactions past the configured threshold |
 | `portal-daily-summary` | `PortalDailySummaryJob` | `0 4 * * *` | `default` | 2 | Emails each portal transporter their previous day's weighing summary (04:00 UTC = 07:00 EAT) |
+| `commercial-periodic-billing` | `CommercialPeriodicBillingJob` | `30 4 * * *` | `default` | 3 | Rolls up commercial weighings under a Daily/Weekly/Monthly `CommercialTariffRule` into one periodic invoice (04:30 UTC = 07:30 EAT, after `portal-daily-summary`) |
 | `portal-anomaly-alert` | `PortalAnomalyAlertJob` | `0 * * * *` | `default` | 1 | Detects transactions where actual net weight differs from expected by >5% and emails the transporter |
 
 ## Queues
@@ -87,16 +88,46 @@ Without this, `SubscriptionEnforcementMiddleware` would continue serving the cac
 }
 ```
 
-Set `Nats:Enabled = false` (the default) in development to prevent startup failures when NATS is not running locally. In production, override via:
+Set `Nats:Enabled = false` (the default) in development to prevent startup failures when NATS is not running locally.
 
-```
-NATS__URL=nats://nats.platform.svc.cluster.local:4222
-NATS__ENABLED=true
-```
+**Current production state: `Nats:Enabled` is `false` in production today.** There is no
+`NATS__URL`/`NATS__ENABLED` environment override anywhere in this service's deployment config
+(`devops-k8s/apps/truload-backend/`) — `appsettings.json`'s `false` default is what actually runs.
+NATS itself is healthy in-cluster; this app's toggle to use it has simply never been flipped. This
+affects both hosted services below identically, since they share the one `Nats:Enabled` flag.
 
 **Why `sub:status:{orgId}` and not `tenant:{slug}`?**
 
 All other Codevertex Go services use `tenant:{slug}` as their Redis subscription cache key. TruLoad predates the uniform pattern and uses `sub:status:{orgId}` (org UUID). The `SubscriptionCacheInvalidationService` handles the slug→UUID translation transparently.
+
+### AuthDemoSyncService
+
+| Property | Value |
+|----------|-------|
+| Class | `Services.Background.AuthDemoSyncService` |
+| Trigger | NATS JetStream stream `auth`, subjects `auth.user.>` (durable, ack-explicit consumer) |
+| Enabled by | `Nats:Enabled = true` in configuration (same flag as `SubscriptionCacheInvalidationService` above) |
+
+**What it does:**
+
+Syncs auth-api's shared `codevertex-demo` tenant's weighing-relevant personas
+(`commercial.operator@`, `quarry.finance@`, `waste.operator@`, plus the enforcement demo staff,
+etc. — see the class's `RoleMap`) into outlet-scoped local Organizations/Stations, so a prospect
+can practice or train on TruConnect against the shared demo tenant without any risk of fake data
+landing on a real organization. Each demo outlet (`COMM`/`QUARRY`/`WASTE`/`ENF`) maps to its own
+Organization + Station pair via a small static `OutletOrgMap`, keyed by outlet code. On
+`auth.user.created`/`updated` it finds-or-updates the matching `ApplicationUser` by email; on
+`auth.user.deleted` it deactivates the account (`LockoutEnd = MaxValue`) rather than hard-deleting,
+since TruLoad has real FKs from users into weighing/case data that a hard delete could violate.
+
+**Current real-world state: this service has never executed in production.** Because it shares
+the `Nats:Enabled` flag documented above, and that flag is `false` in production with no override,
+the service's `ExecuteAsync` logs `NATS auth-demo sync disabled (Nats:Enabled=false)` and returns
+immediately on every pod start. None of the demo personas or outlet organizations it is responsible
+for creating exist live today. This is tracked as Blocker 2 in the commercial-weighing initiative's
+audit plan (see that plan's "CRITICAL PATH" section) — the fix is an infra change
+(`Nats__Enabled=true` on the `truload-backend-env` Secret plus a restart), not a code change; all
+code for this service is written, committed, and CI-green.
 
 ---
 
