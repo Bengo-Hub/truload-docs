@@ -145,3 +145,19 @@ blocked from generating it.
 | Transaction Audit Log | | | | :material-check: |
 | Pending Transactions | :material-check: | :material-check: | | :material-check: |
 | Monthly Reconciliation | | | :material-check: | :material-check: |
+
+### Vertical gating (in addition to role)
+
+Catalog visibility is also filtered by the organisation's classified vertical, on top of the
+role-based gating above. A report type can optionally carry an allowed-vertical list, checked
+against the `vertical` key in the organisation's `MetadataJson` (see
+[vertical classification](business-models.md)) — a quarry-only report, for example, would stay
+hidden from a waste-management tenant even if the caller's role would otherwise see it.
+
+This follows the same null-means-unrestricted convention as role gating: a report with no vertical
+list configured is visible to every vertical, and an organisation that hasn't been classified with
+a vertical yet sees every report exactly as it did before this field existed — nothing changes for
+an unclassified org. No shipped report currently restricts by vertical; the mechanism exists for
+future vertical-specific reports (e.g. a quarry-only blast-face tonnage report) to opt into, the
+same way individual reports already opt into role restrictions. A Superuser/System Admin caller
+always bypasses both gates.
