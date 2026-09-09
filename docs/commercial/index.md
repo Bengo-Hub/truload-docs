@@ -24,7 +24,7 @@ doc for how it's stored.
 
 ## Key Features
 
-- **Two-pass weighing** -- gross and tare captured separately; net weight calculated automatically
+- **Two-pass weighing with reweighs** -- gross and tare captured separately, net weight calculated automatically, and a vehicle can be sent back for any number of reweighs before the transaction is finalized
 - **Stored tare** -- pre-registered vehicle tare weights for single-pass operations
 - **Cargo type configuration** -- per-commodity tolerances, quality deduction rules
 - **Multi-tenant** -- each site operates independently with its own users, scales, and settings
@@ -56,7 +56,7 @@ See [Business Models](business-models.md) to choose and configure the right mode
 
 - :material-scale-balance: **[Two-Pass Weighing](two-pass-weighing.md)**
 
-    Complete inbound/outbound workflow with diagrams
+    Complete inbound/outbound workflow with diagrams, plus reweighs for vehicles that need more than one return pass
 
 - :material-truck: **[Tare Management](tare-management.md)**
 

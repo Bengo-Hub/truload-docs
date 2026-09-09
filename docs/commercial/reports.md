@@ -14,7 +14,7 @@ Overview of all transactions for a selected date, grouped by shift.
 | Total net weight | Sum of all net weights (tonnes) |
 | Average net weight | Mean net weight per transaction |
 | Vehicles weighed | Distinct vehicle count |
-| Pending transactions | Two-pass transactions awaiting second pass |
+| Pending transactions | Open transactions awaiting a second pass or a reweigh |
 
 ### 2. Tonnage by Cargo Type
 
@@ -79,7 +79,7 @@ Detailed log of all actions taken on weighing transactions:
 
 ### 9. Pending Transactions
 
-List of all two-pass transactions awaiting their second pass:
+List of all open transactions awaiting their second pass or a reweigh (see [Reweighs and Multiple Capture Passes](two-pass-weighing.md#reweighs-and-multiple-capture-passes)):
 
 - Age of pending transaction (hours/days)
 - Vehicle and transporter details

@@ -32,7 +32,8 @@ Shows the transaction status badge:
 |--------|---------|
 | **Pending** | Transaction created; no weight captured yet |
 | **FirstWeightCaptured** | First pass captured; awaiting second pass |
-| **Complete** | Both passes done; final ticket available |
+| **AwaitingReweigh** | A second weight or reweigh was captured but not finalized; the vehicle left to adjust cargo and is expected back for another capture under this same transaction. No invoice yet |
+| **Complete** | Transaction finalized; final ticket available |
 | **ToleranceExceeded** | Weight variance beyond configured tolerance — supervisor approval required |
 | **Voided** | Transaction cancelled (or a tolerance exception was rejected) — recorded with a reason |
 
@@ -74,10 +75,16 @@ supervisor approves (or rejects/voids) the exception.
 
 | Field | Description |
 |-------|-------------|
-| 1st pass weight | Weight captured on the first pass (kg), with timestamp |
+| 1st pass weight | Weight captured on the first pass (kg), with timestamp. Always the very first capture, regardless of how many reweighs followed |
 | 1st pass type | `Gross` or `Tare` — identifies what was weighed first |
-| 2nd pass weight | Weight captured on the second pass (kg), with timestamp |
+| 2nd pass weight | Weight captured by whichever pass actually finalized the transaction (kg), with timestamp. If the vehicle was reweighed one or more times before finalizing, this holds that later reading, not literally the second capture taken |
 | 2nd pass type | The complementary weight type |
+
+If the transaction went through one or more reweighs, the ticket also shows the **full capture
+history**: every pass in order, labelled "First Weight", "Second Weight", or "Reweigh #N", each with
+its own weight, type, timestamp, and (for a pass that didn't finalize) the recorded reweigh reason.
+See [Reweighs and Multiple Capture Passes](two-pass-weighing.md#reweighs-and-multiple-capture-passes)
+for how this numbering works and a worked example.
 
 ### Billing
 
@@ -119,15 +126,15 @@ Click **Print Ticket** in the ticket detail drawer to generate a full-page PDF w
 - All consignment and cargo details
 - Operator and driver signature lines
 
-An interim PDF is available after the first pass for use as a delivery receipt. The final PDF is generated after the second pass.
+An interim PDF is available after the first pass for use as a delivery receipt. The final PDF is generated once the transaction is finalized, whether that happens on the second pass or after one or more reweighs.
 
 ### Thermal printer
 
 Click **Print Thermal**, next to **Print Ticket**, in the ticket detail drawer or on the final
 step of the capture flow. TruLoad generates a raw byte file formatted for an 80mm thermal
 receipt printer and downloads it to the operator's computer. The same button covers both the
-interim ticket (available after the first pass) and the final ticket (available after the
-second pass), matching the PDF above: a tolerance-exceeded transaction blocks the final
+interim ticket (available after the first pass) and the final ticket (available once the
+transaction is finalized), matching the PDF above: a tolerance-exceeded transaction blocks the final
 thermal ticket the same way it blocks the final PDF, until a supervisor approves or rejects
 the exception.
 
@@ -211,11 +218,15 @@ scale-type tag at all, e.g. one created without going through either dedicated c
 stateDiagram-v2
     [*] --> Pending: Transaction initiated
     Pending --> FirstWeightCaptured: First pass captured
-    FirstWeightCaptured --> Complete: Second pass captured (net within tolerance)
+    FirstWeightCaptured --> Complete: Second pass captured and finalized (net within tolerance)
     FirstWeightCaptured --> ToleranceExceeded: Net discrepancy exceeds configured tolerance
+    FirstWeightCaptured --> AwaitingReweigh: Weight captured, saved without finalizing
+    AwaitingReweigh --> AwaitingReweigh: Another reweigh captured, still not finalized
+    AwaitingReweigh --> Complete: Finalized (net within tolerance)
+    AwaitingReweigh --> ToleranceExceeded: Finalized, net discrepancy exceeds configured tolerance
     ToleranceExceeded --> Complete: Supervisor approves tolerance exception
     Complete --> [*]
 ```
 
 !!! info "Tolerance check timing"
-    Tolerance is evaluated **after** the second weight is captured and net weight is calculated. The Expected Net Weight must be entered in the Ticket step; if it is not provided before the second weight is captured, tolerance is not evaluated for that transaction.
+    Tolerance is evaluated after every capture from the second weight onward, so an operator gets live "still over/under limit" feedback during a reweigh cycle. It only gates ticket generation once the transaction is finalized. The Expected Net Weight must be entered in the Ticket step; if it is not provided before a weight is captured, tolerance is not evaluated for that transaction.
