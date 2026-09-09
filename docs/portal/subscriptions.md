@@ -1,86 +1,49 @@
-# Subscriptions
+# Subscription (Feature Tier)
 
-The Transporter Portal offers three subscription plans to match your fleet size and reporting needs. All new accounts start with a **7-day free trial** on the Standard plan.
+The Transporter Portal does not sell a separate subscription of its own. Your feature tier is
+derived from the weighbridge operator(s) you weigh with: when you weigh at a commercial station,
+the portal reads that operator's own TruLoad plan and reflects the matching tier back to you on
+**Settings > Subscription**. There is nothing to purchase, upgrade, or cancel from the portal
+itself.
 
-## Plan Comparison
+## How your tier is determined
 
-| Feature | Basic | Standard | Premium |
-|---------|-------|----------|---------|
-| **Monthly price** | KES 3,000 | KES 5,000 | KES 15,000 |
-| Vehicles in fleet | Up to 10 | Up to 50 | Unlimited |
-| Drivers | Up to 5 | Up to 25 | Unlimited |
-| Weighing history | 3 months | 12 months | 24 months |
-| Ticket downloads (PDF) | :material-check: | :material-check: | :material-check: |
-| Basic reports | :material-check: | :material-check: | :material-check: |
-| Driver trip reports | | :material-check: | :material-check: |
-| Cargo analysis reports | | :material-check: | :material-check: |
-| Fleet utilization reports | | | :material-check: |
-| Weight discrepancy alerts | | | :material-check: |
-| API access | | | :material-check: |
-| Priority support | | :material-check: | :material-check: |
-| Custom branding | | | :material-check: |
+1. The portal looks at every organisation you have weighed at.
+2. It resolves the plan of the organisation you most recently weighed with.
+3. Your tier (Basic, Standard, or Premium) and feature flags are derived from that plan's name and
+   entitlements.
 
-## Choosing a Plan
+If you weigh at more than one operator, your tier can change between visits depending on which
+operator's plan was checked most recently. This is expected behaviour, not a billing event on your
+side.
 
-!!! tip "Which plan is right for you?"
-    - **Basic (KES 3,000/mo)** -- ideal for owner-operators with a small fleet who need basic weighing record access
-    - **Standard (KES 5,000/mo)** -- suited for mid-size transporters who need full history, driver reports, and cargo analysis
-    - **Premium (KES 15,000/mo)** -- designed for large fleet operators who need API integration, unlimited access, discrepancy alerts, and custom branding
+## What the tier controls
 
-## Managing Your Subscription
+| Area | Effect |
+|------|--------|
+| Weighing history window | How far back your **Weighings** history and reports go (3/12/24 months depending on tier) |
+| Vehicle and driver limits | Soft limits reflected in the dashboard, matching the operator's own plan |
+| Feature flags | Multi-site access, data export, driver reports, vehicle trends, API access, analytics, consignment tracking - shown as badges on the Subscription page when enabled |
 
-### Upgrading
+## If you need a higher tier
 
-1. Navigate to **Settings > Subscription**.
-2. Click **Change Plan**.
-3. Select the new plan.
-4. The upgrade takes effect immediately; you are charged the prorated difference for the current billing period.
+Since the tier comes from the weighbridge operator's own plan, there is no in-portal upgrade flow.
+If you need access to features your current tier doesn't include:
 
-### Downgrading
+- Ask the weighbridge operator you work with most to upgrade their own TruLoad plan, or
+- Contact your CodeVertex account manager to discuss a dedicated billing arrangement for your
+  transporter account.
 
-1. Navigate to **Settings > Subscription**.
-2. Click **Change Plan**.
-3. Select the lower plan.
-4. The downgrade takes effect at the end of the current billing period.
+## Paying for weighing fees
 
-!!! warning "Data access on downgrade"
-    If you downgrade to a plan with shorter history retention, you will lose access to older records (though they are not deleted). Upgrading again restores access.
+Subscription tier is separate from how you pay for the weighing fees themselves. On the
+**Statement** page you can see your running balance, and a weighbridge operator can set your
+account to either:
 
-### Cancellation
+- **Pay per session** - settle the fee at the scale when you weigh, or
+- **On account** - fees accrue against a credit limit the operator sets for you. Any unpaid
+  invoice appears under **Statement > Outstanding Invoices** with a **Pay Now** button, so you can
+  settle it yourself instead of waiting for the operator to chase it up.
 
-1. Navigate to **Settings > Subscription**.
-2. Click **Cancel Subscription**.
-3. Your access continues until the end of the current billing period.
-4. After cancellation, you can still log in but only see the account settings page.
-
-## Payment
-
-### Payment methods
-
-| Method | Supported |
-|--------|-----------|
-| M-PESA (STK push) | :material-check: |
-| M-PESA (paybill) | :material-check: |
-| Bank transfer | :material-check: |
-
-### Billing cycle
-
-- Plans are billed monthly on the same date each month (based on your signup date)
-- Invoices are generated automatically and available under **Settings > Billing History**
-- Payment reminders are sent 3 days before the due date
-
-### Failed payments
-
-If a payment fails:
-
-1. Your account enters a **7-day grace period** during which full access is maintained.
-2. A payment retry is attempted daily during the grace period.
-3. If payment is not received within 7 days, the account is suspended (read-only access to settings only).
-4. Pay any outstanding balance to immediately restore full access.
-
-## Free Trial
-
-- All new accounts receive a **7-day free trial** on the Standard plan
-- No payment method is required to start the trial
-- At the end of the trial, you are prompted to select a plan
-- If no plan is selected, the account is suspended until a subscription is activated
+An on-account balance at or near its credit limit switches new invoices back to pay-now
+automatically until the balance is brought down - the weighing itself is never blocked by this.
