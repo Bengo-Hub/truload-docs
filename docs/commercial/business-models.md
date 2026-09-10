@@ -45,11 +45,18 @@ the primary mechanism. Most Model 1 operators instead define one or more **tarif
 **Setup > Tariffs**, each specifying:
 
 - **Scope** — either a specific transporter's contract rate, or a bracket matched by vehicle type,
-  axle count range, and/or gross weight range. A transporter contract rule always wins over any
-  bracket rule; among bracket rules, the most specific match wins.
+  axle count range, gross weight range, and/or cargo/material type. A transporter contract rule
+  always wins over any bracket rule; among bracket rules, the most specific match wins.
+- **Cargo/material type** — optional, and combinable with either scope above. Real weighbridge and
+  quarry billing routinely charges different rates per material — a quarry pricing ballast higher
+  than sand, a waste facility pricing hazardous waste higher than general waste. Also lets a
+  contract transporter be priced differently per material under the same contract.
 - **Rate basis** — how the fee amount is applied: `PerTonne` (fee × net weight in tonnes — the
   default for new rules, since most commercial tenants bill by tonnage), `PerKg` (fee × net weight
   in kg), or `Flat` (a fixed amount per matching weighing, regardless of tonnage).
+- **Minimum charge** — optional, for `PerTonne`/`PerKg` rules. A floor for small loads, then the
+  per-tonne/per-kg rate above it — a standard tipping-fee pattern (e.g. municipal transfer stations
+  commonly charge a flat minimum for loads under a small threshold, then a per-tonne rate above).
 - **Billing period** — when the fee is actually invoiced: `Immediate` (one invoice per weighing,
   right when it completes — the original behaviour) or `Daily`/`Weekly`/`Bi-weekly`/`Monthly`/
   `Quarterly`/`Yearly` (the fee accrues instead, and every accrual for the same organisation,
@@ -59,7 +66,12 @@ the primary mechanism. Most Model 1 operators instead define one or more **tarif
   vehicle's own transporter — see "Billing on behalf of a client" in the
   [Setup guide](setup.md#billing-on-behalf-of-a-client). This is how a quarry or mining operation
   that extracts/hauls **for a client** (rather than for its own account) bills that client on
-  aggregated tonnage, regardless of which hauling company's trucks were actually weighed.
+  aggregated tonnage, regardless of which hauling company's trucks were actually weighed — matching
+  how mining/haulage contracts are billed in practice: unit-price per tonne verified against the
+  weighbridge, not per invoice-issuer.
+
+Combining these five dimensions covers the commercial weighing billing patterns actually seen in
+practice — see "Billing Patterns by Vertical" below for worked examples per industry.
 
 When a weighing matches no tariff rule, the organisation's flat `CommercialWeighingFeeKes` value
 applies instead, exactly as before — this keeps existing, unclassified organisations behaving
@@ -129,6 +141,23 @@ flowchart LR
 
 If any of the above starts billing a hauler or client for the weighing, switch to Model 1 — the
 vertical doesn't change, only the business model setting does.
+
+---
+
+## Billing Patterns by Vertical
+
+Real-world weighbridge, quarry, and waste-management billing follows a handful of recurring
+patterns. Configure the tariff rule fields above to match whichever applies:
+
+| Scenario | Model | Tariff configuration |
+|----------|-------|-----------------------|
+| Public/commercial weighbridge charging any transporter per trip | Model 1 | A bracket rule, `Flat` rate basis, `Immediate` billing — e.g. a fixed fee per weighing regardless of tonnage. |
+| Quarry selling material by tonnage, different rates per material (sand vs. ballast vs. hardcore) | Model 1 | One rule per `Cargo/Material Type`, `PerTonne` rate basis. A `Minimum Charge` floor guards against near-zero invoices for very small loads. |
+| Waste transfer station with a tipping fee that varies by waste category (general, construction, hazardous, recyclables) | Model 1 | One rule per `Cargo/Material Type` (mapped to your waste categories), `PerTonne` rate basis, `Minimum Charge` set — mirrors how municipal transfer stations publish per-category, per-tonne gate fees with a minimum for small loads. |
+| Factory weighing its own inbound/outbound cargo, no external billing at all | Model 2 | No tariff rules needed — weighing fee is off entirely. The factory only pays the platform subscription (see below). |
+| A private company contracted to mine/haul/dispose **on behalf of a client** (a government agency, a landowner, a waste authority), billed by tonnage regardless of which of its own trucks did the work | Model 1 | `Bill To (if different)` set to the client, `PerTonne` or `PerKg` rate basis, `Billing Period` often `Monthly` to match contract payment cycles — mirrors real mining/haulage contracts, which are typically paid on unit-price-per-tonne verified against the weighbridge, not against a specific invoice-issuing entity. |
+| A transporter contract with a negotiated flat or per-tonne rate, same rate for everything they haul | Model 1 | `Transporter Contract Rate` set to that transporter, no cargo type — the contract rule wins over any bracket rule. |
+| The same contract transporter, but priced differently depending on what they're hauling | Model 1 | `Transporter Contract Rate` set to that transporter, **plus** `Cargo/Material Type` set on each rule — one rule per material at that transporter's negotiated rate for it. |
 
 ---
 

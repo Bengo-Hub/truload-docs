@@ -27,17 +27,21 @@ Each rule has:
 | Field | Description |
 |-------|-------------|
 | **Label** | Optional display name, e.g. "Heavy trucks (5+ axles)" or "Acme Transporters contract rate" |
-| **Transporter Contract Rate** | Optional. When set, the rule applies only to that transporter's weighings and ignores the bracket fields below. Takes priority over every bracket rule. |
+| **Transporter Contract Rate** | Optional. When set, the rule applies only to that transporter's weighings and ignores the bracket fields below. Takes priority over every bracket rule. Can still be narrowed by Cargo/Material Type (below) — a contract hauler can be priced differently per material under the same contract. |
 | **Bill To (if different)** | Optional. When set, invoices this rule generates go to this transporter/customer instead of whichever transporter operated the weighed vehicle. See "Billing on behalf of a client" below. |
-| **Vehicle Type / Min-Max Axle Count / Min-Max Gross Weight (kg)** | Optional bracket-matching fields, used when no transporter is selected. Leave any field blank to match any value; the most specific matching bracket wins. |
+| **Cargo / Material Type** | Optional. Matches a specific material (from the same cargo type list used elsewhere in the system) — e.g. a quarry pricing ballast higher than sand, or a waste facility pricing hazardous waste higher than general waste. Works alongside a transporter contract rate or a bracket rule. |
+| **Vehicle Type / Min-Max Axle Count / Min-Max Gross Weight (kg)** | Optional bracket-matching fields, used when no transporter is selected. Leave any field blank to match any value; the most specific matching bracket (including cargo type, if set) wins. |
 | **Fee (KES)** | The amount, interpreted according to Rate Basis below |
 | **Rate Basis** | `Per tonne` (fee × net weight in tonnes — the default), `Per kg` (fee × net weight in kg), or `Flat fee` (a fixed amount per matching weighing) |
+| **Minimum Charge (KES)** | Optional, for `Per tonne`/`Per kg` rules only. A floor applied when the computed amount would be less than this — e.g. a waste facility charging a flat minimum for any small load, then the per-tonne rate above it. |
 | **Invoiced** | `Per transaction` (invoice immediately on completion — the original behaviour) or `Daily`/`Weekly`/`Bi-weekly`/`Monthly`/`Quarterly`/`Yearly` (roll every matching weighing in that period into one invoice) |
 
-Resolution order for a completed weighing: a matching transporter contract rule always wins;
-otherwise the most specific matching bracket rule applies; if nothing matches, the organisation's
-flat Weighing fee (KES) applies. Rules with a non-immediate billing period don't invoice right
-away — they accrue, and the `commercial-periodic-billing` background job (see
+Resolution order for a completed weighing: a matching transporter contract rule always wins
+(narrowed further by cargo type if more than one contract rule matches this transporter);
+otherwise the most specific matching bracket rule applies (cargo type counts toward specificity
+alongside vehicle type/axle count/weight bracket); if nothing matches, the organisation's flat
+Weighing fee (KES) applies. Rules with a non-immediate billing period don't invoice right away —
+they accrue, and the `commercial-periodic-billing` background job (see
 [Background Jobs](../technical/BACKGROUND_JOBS.md)) rolls up every accrual for the same
 organisation, billed party, and period into one invoice once that period has fully elapsed.
 
