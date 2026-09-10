@@ -2,6 +2,15 @@
 
 TruLoad supports two distinct commercial weighing business models. Understanding which model applies to your organisation determines how billing, fees, and transaction workflows are configured.
 
+!!! note "Business model vs. industry vertical"
+    The business model (Model 1 or Model 2, below) is a separate setting from your organisation's
+    industry vertical (quarry, waste management, factory, logistics, etc., set under Setup >
+    Settings). The vertical only affects cosmetic labelling and report scoping — it is the
+    **Weighing Business Model** setting alone that actually turns invoicing on or off. A quarry,
+    for example, is Model 1 the moment it bills anyone (a client, a hauler) for weighing services,
+    and Model 2 only if every weighing is purely internal tracking with nothing invoiced. See
+    "Choosing the Right Model" below rather than assuming a model from the vertical alone.
+
 ---
 
 ## Model 1 — Third-Party Weighbridge (Fee-per-Transaction)
@@ -42,10 +51,15 @@ the primary mechanism. Most Model 1 operators instead define one or more **tarif
   default for new rules, since most commercial tenants bill by tonnage), `PerKg` (fee × net weight
   in kg), or `Flat` (a fixed amount per matching weighing, regardless of tonnage).
 - **Billing period** — when the fee is actually invoiced: `Immediate` (one invoice per weighing,
-  right when it completes — the original behaviour) or `Daily`/`Weekly`/`Monthly` (the fee accrues
-  instead, and every accrual for the same organisation, transporter, and period is rolled into ONE
-  invoice once that period elapses — e.g. a client who settles with a transporter monthly on
-  aggregated tonnage).
+  right when it completes — the original behaviour) or `Daily`/`Weekly`/`Bi-weekly`/`Monthly`/
+  `Quarterly`/`Yearly` (the fee accrues instead, and every accrual for the same organisation,
+  billed party, and period is rolled into ONE invoice once that period elapses — e.g. a client who
+  settles with a transporter monthly on aggregated tonnage).
+- **Bill To (if different)** — optional. Bills a distinct commissioning client instead of the
+  vehicle's own transporter — see "Billing on behalf of a client" in the
+  [Setup guide](setup.md#billing-on-behalf-of-a-client). This is how a quarry or mining operation
+  that extracts/hauls **for a client** (rather than for its own account) bills that client on
+  aggregated tonnage, regardless of which hauling company's trucks were actually weighed.
 
 When a weighing matches no tariff rule, the organisation's flat `CommercialWeighingFeeKes` value
 applies instead, exactly as before — this keeps existing, unclassified organisations behaving
@@ -68,6 +82,10 @@ identically to prior versions of TruLoad.
 - Port authority weighbridges
 - Highway weighbridges operated by private concessionaires
 - Third-party logistics hubs
+- Quarry, mining, or waste-management operations that bill someone for the weighing — a hauler
+  paying per load, or a client the operation extracts/hauls/disposes on behalf of (see "Billing on
+  behalf of a client" above). The quarry/mining/waste *label* doesn't determine the model; billing
+  anyone for weighing does.
 
 ---
 
@@ -103,10 +121,14 @@ flowchart LR
 
 ### Who uses this model
 
-- Factories weighing inbound raw materials and outbound finished goods
-- Quarry and mining operations tracking truck payload per shift
-- Grain depots receiving and dispatching bulk commodities
-- Waste management facilities calculating tipping fees internally
+- Factories weighing inbound raw materials and outbound finished goods for their own account
+- Quarry and mining operations tracking their own fleet's payload per shift, with nothing invoiced
+  to an external hauler or client
+- Grain depots receiving and dispatching bulk commodities for their own account
+- Waste management facilities tracking internal tipping volumes with no billed party
+
+If any of the above starts billing a hauler or client for the weighing, switch to Model 1 — the
+vertical doesn't change, only the business model setting does.
 
 ---
 
@@ -121,6 +143,21 @@ flowchart LR
 | Is your weighbridge your core business? | Yes | No (it supports your core business) |
 
 ---
+
+## Treasury / GL Linkage
+
+When **Payment gateway** is set to Treasury, Model 1 weighing-fee invoices post as real treasury
+`Invoice`s (`invoice_type="commercial_weighing_fee"`) in **your own organisation's book** — not the
+platform's. Settlement account resolution (`BankAccount.DefaultInvoiceTypes`) and GL account
+mapping (`GLAccountMapping`) are both scoped strictly to your tenant, so your weighing-fee revenue
+can never be routed into another tenant's account or the platform's own subscription book, and vice
+versa. Configure your settlement bank account for `commercial_weighing_fee` under **Setup >
+Payments** (or Banking > Accounts) — this is self-service; no platform operator action is required.
+Model 2 organisations generate no weighing invoices, so nothing posts to GL for weighing
+transactions regardless of Treasury access.
+
+The platform subscription fee (below) is entirely separate: it always posts to the **platform's
+own book** (`invoice_type="subscription"`), regardless of your business model or vertical.
 
 ## Platform Subscription (Both Models)
 
