@@ -98,7 +98,12 @@ Pluggable adapter model:
 - `src/backend/` — direct backend integration for frontend-less deployments:
   `BackendClient.js` (auth + `autoweigh`/`complete` submission), `SyncQueue.js` (durable
   `weighing_queue` SQLite table, dependency-chained sends, per-call idempotency key, backoff,
-  dead-letter), `ConfigSyncService.js` (Stations/AxleConfiguration mirror + drift detection)
+  dead-letter), `ConfigSyncService.js` (Stations/AxleConfiguration/AxleWeightReference/
+  ToleranceSetting mirror + drift detection), `ComplianceEngine.js` (local provisional
+  compliance decision for enforcement — a hand-port of `truload-frontend`'s own offline
+  engine — plus a lightweight commercial tare/gross/net resolver), `LocalWeighingStore.js`
+  (`local_weighings` table, one row per physical weighing, so a capture can never be
+  silently lost and the capture UI can show pending-sync state)
 - `src/simulation/` — scripted feeds for regression runs
 
 ## Data stores

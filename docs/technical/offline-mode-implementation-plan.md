@@ -125,15 +125,15 @@ solve "keep working when the network drops," but neither replaces the other:
 
 | | This page (frontend PWA) | TruConnect's offline queue |
 |---|---|---|
-| Runs on | The browser, via IndexedDB (Dexie) + a service worker | The TruConnect Windows bridge, via a local SQLite `weighing_queue` table |
+| Runs on | The browser, via IndexedDB (Dexie) + a service worker | The TruConnect Windows bridge, via local SQLite (`weighing_queue` + `local_weighings`) |
 | Deployment shape | A browser-connected site with a `truload-frontend` install | A frontend-less site (TruConnect posts straight to `truload-backend`, no browser involved) |
-| Covers | Full enforcement chain: weighing → case → prosecution → invoice | Weighing capture only (`autoweigh`/`complete`), dependency-chained |
-| Built | June 2026, this initiative | A separate, later initiative (TruConnect Phase 3/4) — see that initiative's plan file for its own verification record |
+| Covers | Full enforcement chain: weighing → case → prosecution → invoice, plus a local provisional compliance decision (`compliance.ts`) | Weighing capture (`autoweigh`/`complete`, dependency-chained) **plus a local provisional compliance decision** (`ComplianceEngine.js`, a hand-port of the same engine) for enforcement, and a local-only tare/gross/net preview for commercial. Case, prosecution, invoice, and billing stay backend-only. |
+| Built | June 2026, this initiative | A separate, later initiative (TruConnect Phase 3/4), followed by the 2026-09-11 offline-weighing redesign that added the local compliance engine and rebuilt the Mobile/Multideck capture screens. See that initiative's plan file for its own verification record. |
 
 If you're building for a site that has a local frontend install, this page's mechanism applies. If
 you're building for a frontend-less TruConnect-only deployment, see
 [Architecture](architecture.md#components) and TruConnect's own `src/backend/` module
-(`SyncQueue.js`, `ConfigSyncService.js`) instead.
+(`SyncQueue.js`, `ConfigSyncService.js`, `ComplianceEngine.js`, `LocalWeighingStore.js`) instead.
 
 ## Sequencing & PRs
 

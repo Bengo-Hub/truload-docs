@@ -38,6 +38,13 @@
 5. Validate live data feed to frontend weighing screen.
 6. Confirm RDU and device mappings where used.
 
+!!! warning "Mobile/Multideck screenshots below are stale (2026-09-11 offline-weighing redesign)"
+    Both screens shown below predate a rebuild that added a "Weighing Setup" card (plate entry,
+    axle-configuration picker, Enforcement/Commercial mode) and a provisional compliance/net-weight
+    result panel, plus a cloud-connectivity badge and a pending-sync glance. Multideck's capture
+    flow was also built from scratch; it previously had no interactive capture elements at all.
+    Needs a manual recapture, not something this pass could regenerate.
+
 ![TruConnect mobile view](../media/truconnect/mobile-view.png)
 ![TruConnect multideck view](../media/truconnect/multodect-view.png)
 ![General settings](../media/truconnect/general-settings.png)
