@@ -9,12 +9,20 @@ Navigate to **Setup > Settings > Commercial** to configure organisation-wide com
 | Setting | Description | Default |
 |---------|-------------|---------|
 | **Weighing Business Model** | `Third-Party Weighbridge` (charges transporters per transaction) or `Facility-Owned Scale` (no per-transaction fee, internal use only) | — |
+| **Legal framework (pre-compliance check)** | Optional. `None`, `Traffic Act`, or `EAC Vehicle Load Control Act`. Lets transporters check a load against that Act's axle/GVW tolerances — using the same axle configurations as enforcement weighing — before it reaches an enforcement weighbridge. This is separate from, and does not affect, the declared-vs-measured cargo weight tolerance every commercial tenant already has. | None |
 | **Weighing fee (KES)** | Fallback per-transaction fee, used only when no tariff rule (see below) matches a weighing. Only applies when model is `Third-Party Weighbridge`. Leave at 0 for facility-owned scales. | — |
 | **Default tare expiry (days)** | Number of days a stored tare weight remains valid before re-verification is required | 90 |
 | **Payment gateway** | Integrated payment provider (read-only; configured by platform admin) | — |
 
 !!! info "Business model"
     Set the **Weighing Business Model** before going live. When set to `Facility-Owned Scale`, the system skips invoice creation and payment collection for every transaction. See [Business Models](business-models.md) for a full comparison.
+
+!!! info "Legal framework is optional by design"
+    TruLoad may be deployed outside Kenya/East Africa, where neither the Traffic Act nor the EAC
+    Vehicle Load Control Act applies. Leaving this as **None** (the default) means weighing
+    tickets record weight only and never calculate or flag a compliance decision. Configuring a
+    framework does not change billing or tariffs — it only enables the axle-load pre-compliance
+    check described above.
 
 ## Tariff Rules
 
